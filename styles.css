@@ -416,6 +416,120 @@ a:focus-visible {
   color: var(--muted);
 }
 
+.claim-guide {
+  padding: clamp(80px, 10vw, 150px) clamp(22px, 7vw, 110px);
+  border-top: 1px solid var(--line);
+  background:
+    linear-gradient(rgba(6, 17, 14, 0.78), rgba(6, 17, 14, 0.96)),
+    repeating-linear-gradient(135deg, rgba(184, 242, 70, 0.08) 0 20px, transparent 20px 40px);
+}
+
+.claim-heading {
+  display: grid;
+  grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+  gap: 18px clamp(42px, 8vw, 140px);
+  align-items: end;
+  margin-bottom: 52px;
+}
+
+.claim-heading .section-number {
+  grid-column: 1;
+}
+
+.claim-heading h2 {
+  grid-column: 1;
+  margin-bottom: 0;
+  font-size: clamp(2.7rem, 5.3vw, 5.7rem);
+}
+
+.claim-heading > p:last-child {
+  grid-column: 2;
+  grid-row: 2;
+  max-width: 690px;
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+}
+
+.claim-steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+
+.claim-steps article {
+  min-height: 240px;
+  padding: clamp(24px, 3vw, 38px);
+  background: var(--surface);
+}
+
+.claim-steps article > span {
+  display: block;
+  margin-bottom: 36px;
+  color: var(--mint);
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+}
+
+.claim-steps article > strong,
+.claim-steps article > code {
+  display: block;
+  margin-bottom: 16px;
+  color: var(--ink);
+  font-size: clamp(1.12rem, 2vw, 1.45rem);
+  font-weight: 800;
+}
+
+.claim-guide code {
+  font-family: Consolas, "Courier New", monospace;
+}
+
+.claim-steps p {
+  margin-bottom: 0;
+  color: var(--muted);
+}
+
+.claim-steps p code {
+  color: var(--lime);
+}
+
+.claim-commands {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 22px;
+}
+
+.claim-commands div {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  background: rgba(16, 40, 32, 0.74);
+}
+
+.claim-commands code {
+  color: var(--lime);
+  font-weight: 800;
+}
+
+.claim-commands span {
+  color: var(--muted);
+  font-size: 0.88rem;
+  text-align: right;
+}
+
+.claim-note {
+  margin: 18px 0 0;
+  color: var(--gold);
+  font-size: 0.86rem;
+}
+
 .join {
   padding: clamp(80px, 10vw, 150px) clamp(22px, 7vw, 110px);
   border-top: 1px solid var(--line);
@@ -574,6 +688,17 @@ footer p {
     grid-template-columns: 1fr;
   }
 
+  .claim-heading {
+    grid-template-columns: 1fr;
+  }
+
+  .claim-heading .section-number,
+  .claim-heading h2,
+  .claim-heading > p:last-child {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
   .hours {
     grid-template-columns: 1fr;
   }
@@ -626,8 +751,24 @@ footer p {
   }
 
   .feature-grid,
-  .join-cards {
+  .join-cards,
+  .claim-steps,
+  .claim-commands {
     grid-template-columns: 1fr;
+  }
+
+  .claim-guide {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .claim-commands div {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .claim-commands span {
+    text-align: left;
   }
 
   .feature-grid article {
