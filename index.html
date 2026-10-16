@@ -23,8 +23,10 @@
       href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;600;700;800&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20261011-3" />
+    <link rel="stylesheet" href="styles.css?v=20261016-live1" />
     <script src="script.js" defer></script>
+    <script src="presence-config.js?v=20261016-live1" defer></script>
+    <script src="presence.js?v=20261016-live1" defer></script>
   </head>
   <body>
     <header class="topbar">
@@ -68,6 +70,41 @@
           <img src="evergreen-smp-logo.jpg" alt="숲을 배경으로 한 EVERGREEN SMP 3D 블록 로고" />
           <figcaption>BUILD · EXPLORE · TOGETHER</figcaption>
         </figure>
+      </section>
+
+      <section class="presence" aria-labelledby="presence-title">
+        <div class="presence-panel" id="presence-panel" data-state="loading">
+          <div class="presence-heading">
+            <div>
+              <p class="presence-eyebrow">LIVE ON EVERGREEN</p>
+              <h2 id="presence-title">현재 함께하는 플레이어</h2>
+            </div>
+            <span class="presence-status" id="presence-status">연결 확인 중</span>
+          </div>
+
+          <div class="presence-body">
+            <div class="presence-total" aria-label="현재 접속 인원">
+              <span class="presence-total-label">접속 중</span>
+              <p><strong id="presence-count">—</strong><span class="presence-capacity"> / <span id="presence-max">—</span>명</span></p>
+            </div>
+            <div class="presence-roster">
+              <p class="presence-message" id="presence-message" role="status" aria-live="polite" aria-atomic="true">서버에서 현재 접속 정보를 불러오고 있어요.</p>
+              <ul class="presence-players" id="presence-players" aria-label="현재 접속한 플레이어"></ul>
+            </div>
+          </div>
+
+          <div class="presence-footer">
+            <div class="presence-meta">
+              <span>5초 자동 갱신 <span aria-hidden="true">·</span> Java·Bedrock 통합 접속자</span>
+              <span class="presence-last-updated">마지막 확인 <time id="presence-updated">아직 확인되지 않음</time></span>
+            </div>
+            <button class="presence-refresh" id="presence-refresh" type="button" aria-label="접속자 정보 새로고침">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5" /><path d="M19.5 12a7.5 7.5 0 1 0-1.9 5" /><path d="m20 12-3-4" /></svg>
+              새로고침
+            </button>
+          </div>
+          <noscript><p class="presence-noscript">실시간 접속자를 보려면 브라우저에서 JavaScript를 켜 주세요.</p></noscript>
+        </div>
       </section>
 
       <section class="section intro" aria-labelledby="intro-title">
