@@ -24,7 +24,26 @@
     const fragment = document.createDocumentFragment();
     for (const name of names) {
       const chip = document.createElement("li");
-      chip.textContent = name;
+      const face = document.createElement("img");
+      face.className = "presence-avatar";
+      face.alt = "";
+      face.width = 32;
+      face.height = 32;
+      face.loading = "lazy";
+      face.decoding = "async";
+      face.referrerPolicy = "no-referrer";
+      face.crossOrigin = "anonymous";
+      face.addEventListener("error", () => {
+        face.src = "player-avatar-fallback.svg";
+      }, { once: true });
+      // Floodgate replaces Xbox gamertag spaces with underscores on this server.
+      const skinName = name.startsWith(".") ? name.replaceAll("_", " ") : name;
+      face.src = "https://api.mcheads.org/head/" + encodeURIComponent(skinName) + "/32/hat";
+      const label = document.createElement("span");
+      label.className = "presence-player-name";
+      label.textContent = name;
+      chip.appendChild(face);
+      chip.appendChild(label);
       fragment.appendChild(chip);
     }
     list.replaceChildren(fragment);
