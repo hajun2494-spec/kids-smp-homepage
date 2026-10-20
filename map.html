@@ -27,7 +27,7 @@
           <label class="world-label" for="map-world">차원</label><select id="map-world" disabled><option value="">오버월드</option></select>
           <ul id="town-list" class="town-list" aria-label="마을 목록"><li class="town-empty">마을 정보를 불러오는 중이에요.</li></ul>
           <section class="selected-town" id="selected-town" hidden aria-labelledby="selected-town-title"><p class="eyebrow">SELECTED TOWN</p><h3 id="selected-town-title"></h3><dl><div><dt>북서쪽</dt><dd id="town-northwest"></dd></div><div><dt>남동쪽</dt><dd id="town-southeast"></dd></div><div><dt>영역 크기</dt><dd id="town-area"></dd></div></dl></section>
-          <div class="map-data-note"><strong>월드에서 직접 가져온 지도</strong><p>마을 정보는 약 5초마다, 지형과 건축물은 월드 저장 후 반영돼요. 미생성 지역은 빈 영역으로 표시돼요.</p><p>플레이어 좌표와 이동 경로는 표시하지 않아요.</p></div>
+          <div class="map-data-note"><strong>월드에서 직접 가져온 지도</strong><p>마을 정보는 약 5초마다, 지형과 건축물은 월드 저장 후 반영돼요. 현재 마을 주변의 지형을 제공해요. 미생성·아직 렌더링되지 않은 지역은 빈 영역으로 표시돼요.</p><p>플레이어 좌표와 이동 경로는 표시하지 않아요.</p></div>
         </aside>
         <section class="map-main" aria-label="지형 지도">
           <div class="map-statusbar"><span id="map-status" class="status-chip" data-state="loading">연결 중</span><span id="map-updated">서버의 지도 정보를 기다리고 있어요.</span><button id="map-refresh" type="button" title="지도 정보 새로고침">↻ <span>새로고침</span></button></div>
