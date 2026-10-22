@@ -7,6 +7,36 @@
   const timestamp = (value) => value === null || (typeof value === "string" && value.length <= 40 && Number.isFinite(Date.parse(value)));
   const label = (value, max = 80) => typeof value === "string" && value.trim().length > 0 && value.length <= max && !/[\u0000-\u001f\u007f]/.test(value);
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+  const WORLD_LABELS = { overworld: "오버월드", the_nether: "네더", the_end: "엔드" };
+  const onlyKeys = (value, keys) => value && typeof value === "object" && !Array.isArray(value) && Object.keys(value).every((key) => keys.includes(key));
+
+  function validateChunkPlayers(raw) {
+    if (!onlyKeys(raw, ["version", "server", "source", "state", "precision", "chunk_size", "updated_at", "received_at", "update_interval_seconds", "players"])
+      || raw.version !== 1 || raw.precision !== "chunk" || raw.chunk_size !== 16
+      || !["live", "stale", "pending", "offline", "unknown"].includes(raw.state)
+      || !timestamp(raw.updated_at) || !timestamp(raw.received_at) || !Array.isArray(raw.players) || raw.players.length > 1000)
+      throw new Error("플레이어 위치 형식이 올바르지 않아요.");
+    const names = new Set();
+    const players = raw.players.map((player) => {
+      if (!onlyKeys(player, ["name", "world", "chunkX", "chunkZ"]) || !label(player.name, 64) || names.has(player.name.toLowerCase())
+        || !Object.hasOwn(WORLD_LABELS, player.world) || !integer(player.chunkX, 1875000) || !integer(player.chunkZ, 1875000))
+        throw new Error("정확하지 않은 청크 위치예요.");
+      names.add(player.name.toLowerCase());
+      return { name: player.name, world: player.world, chunkX: player.chunkX, chunkZ: player.chunkZ };
+    });
+    if (raw.state !== "live" && players.length) throw new Error("오래된 플레이어 위치예요.");
+    return { state: raw.state, updatedAt: raw.updated_at, receivedAt: raw.received_at, players };
+  }
+
+  function liveChunkPlayers(feed, now = Date.now()) {
+    if (!feed || feed.state !== "live" || !feed.updatedAt || !feed.receivedAt) return [];
+    const age = Math.max(0, now - Date.parse(feed.receivedAt), now - Date.parse(feed.updatedAt));
+    return Number.isFinite(age) && age <= 25000 ? feed.players : [];
+  }
+
+  function chunkBounds(player) {
+    return { minX: player.chunkX * 16, maxX: player.chunkX * 16 + 15, minZ: player.chunkZ * 16, maxZ: player.chunkZ * 16 + 15 };
+  }
 
   function mapEndpoint(statusEndpoint) {
     const url = new URL(statusEndpoint);
@@ -61,7 +91,7 @@
   function viewToWorld(x, y, view) { return { x: view.x + (x - view.width / 2) / view.scale, z: view.z + (y - view.height / 2) / view.scale }; }
   function worldToView(x, z, view) { return { x: (x - view.x) * view.scale + view.width / 2, y: (z - view.z) * view.scale + view.height / 2 }; }
   function coordinateText(point) { return `X ${Math.floor(point.x)} · Z ${Math.floor(point.z)}`; }
-  const pure = { mapEndpoint, validateMap, worldBounds, viewToWorld, worldToView, coordinateText };
+  const pure = { mapEndpoint, validateMap, validateChunkPlayers, liveChunkPlayers, chunkBounds, worldBounds, viewToWorld, worldToView, coordinateText };
   if (typeof module !== "undefined" && module.exports) module.exports = pure;
   if (typeof document === "undefined") return;
 
@@ -73,9 +103,15 @@
   let endpoint;
   try { endpoint = mapEndpoint(window.EVERGREEN_PRESENCE?.endpoint || "https://evergreen-smp-presence.chloekang.chatgpt.site/api/status"); }
   catch (error) { $("map-empty-title").textContent = error.message; return; }
-  const state = { data: null, world: "", selectedTown: "", pin: null, view: { x: 0, z: 0, width: 1, height: 1, scale: 1 }, fitPending: true, failed: false, fetchBusy: false, renderQueued: false, tileActive: 0, tiles: new Map(), pointers: new Map(), gesture: null };
+  const state = { data: null, playerFeed: null, playersFailed: false, playersBusy: false, world: "", selectedTown: "", pin: null, view: { x: 0, z: 0, width: 1, height: 1, scale: 1 }, fitPending: true, failed: false, fetchBusy: false, renderQueued: false, tileActive: 0, tiles: new Map(), pointers: new Map(), gesture: null };
   const announce = (message) => { $("map-announcement").textContent = message; };
-  const currentWorld = () => state.data?.worlds.find((world) => world.id === state.world);
+  const livePlayers = () => state.playersFailed ? [] : liveChunkPlayers(state.playerFeed);
+  const allWorlds = () => {
+    const result = [...(state.data?.worlds || [])];
+    for (const player of livePlayers()) if (!result.some((world) => world.id === player.world)) result.push({ id: player.world, label: WORLD_LABELS[player.world], tiles: [] });
+    return result;
+  };
+  const currentWorld = () => allWorlds().find((world) => world.id === state.world);
   const currentTowns = () => state.data?.towns.filter((town) => town.world === state.world) || [];
   const townColor = (town) => PALETTE[state.data.towns.findIndex((entry) => entry.id === town.id) % PALETTE.length];
   const timeText = (iso) => iso ? new Intl.DateTimeFormat("ko-KR", { timeZone: "Asia/Seoul", hour: "numeric", minute: "2-digit", second: "2-digit", hour12: true }).format(new Date(iso)) : "아직 없음";
@@ -181,13 +217,27 @@
         ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = color; ctx.fillText(town.name, textX, textY); ctx.textBaseline = "alphabetic";
       }
     }
+    // A whole 16×16 area is highlighted; its centre is a schematic marker, not
+    // the person's precise position. Never interpolate or retain old movement.
+    for (const player of livePlayers().filter((entry) => entry.world === state.world)) {
+      const bounds = chunkBounds(player), pos = worldToView(bounds.minX, bounds.minZ, view), size = 16 * view.scale;
+      if (pos.x > view.width || pos.y > view.height || pos.x + size < 0 || pos.y + size < 0) continue;
+      ctx.fillStyle = "#ffc76155"; ctx.fillRect(pos.x, pos.y, size, size);
+      ctx.strokeStyle = "#ffc761"; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); ctx.strokeRect(pos.x, pos.y, Math.max(1, size), Math.max(1, size)); ctx.setLineDash([]);
+      const centre = worldToView(bounds.minX + 8, bounds.minZ + 8, view);
+      ctx.beginPath(); ctx.arc(centre.x, centre.y, 4, 0, Math.PI * 2); ctx.fillStyle = "#ffc761"; ctx.fill();
+      ctx.font = "bold 11px 'Malgun Gothic', sans-serif"; ctx.textAlign = "center";
+      const text = `${player.name} · 1청크`, width = ctx.measureText(text).width;
+      ctx.fillStyle = "#06110ef2"; ctx.fillRect(centre.x - width / 2 - 6, pos.y - 24, width + 12, 19);
+      ctx.fillStyle = "#ffe0a3"; ctx.fillText(text, centre.x, pos.y - 10);
+    }
     if (state.pin) {
       const pos = worldToView(state.pin.x + 0.5, state.pin.z + 0.5, view);
       ctx.lineWidth = 2; ctx.strokeStyle = "#f5f0df"; ctx.fillStyle = "#173f2c"; ctx.beginPath(); ctx.arc(pos.x, pos.y, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(pos.x - 12, pos.y); ctx.lineTo(pos.x - 7, pos.y); ctx.moveTo(pos.x + 7, pos.y); ctx.lineTo(pos.x + 12, pos.y); ctx.moveTo(pos.x, pos.y - 12); ctx.lineTo(pos.x, pos.y - 7); ctx.moveTo(pos.x, pos.y + 7); ctx.lineTo(pos.x, pos.y + 12); ctx.stroke();
     }
     if (state.data && state.data.worlds.length) {
-      const hasAnything = currentTowns().length > 0 || (world && world.tiles.length > 0);
+      const hasAnything = currentTowns().length > 0 || (world && world.tiles.length > 0) || livePlayers().some((player) => player.world === state.world);
       $("map-empty").hidden = hasAnything;
       if (!hasAnything) { $("map-empty-title").textContent = "아직 공개된 지도 영역이 없어요"; $("map-empty-text").textContent = "저장된 지형 또는 마을 정보가 도착하면 여기에 표시돼요."; }
       if (badTiles && badTiles === visibleTiles) $("terrain-updated").textContent = "지형 이미지를 불러오지 못했어요. 마을 영역과 좌표는 계속 확인할 수 있고, 잠시 후 자동으로 다시 불러와요.";
@@ -228,6 +278,7 @@
   }
 
   function renderStatus() {
+    renderPlayerList();
     if (!state.data) return;
     const old = state.data.receivedAt && Date.now() - Date.parse(state.data.receivedAt) > 20000;
     const mode = state.failed || old ? "stale" : state.data.state;
@@ -238,19 +289,55 @@
   }
 
   function renderSnapshot(next) {
-    const worldChanged = !next.worlds.some((world) => world.id === state.world);
     const oldSignature = state.data ? JSON.stringify(state.data.towns) + state.world : "";
     state.data = next;
-    if (worldChanged) { state.world = next.worlds[0]?.id || ""; state.fitPending = true; state.selectedTown = ""; }
-    const selector = $("map-world");
-    if (Array.from(selector.options).map((option) => `${option.value}:${option.textContent}`).join("|") !== next.worlds.map((world) => `${world.id}:${world.label}`).join("|")) {
-      selector.replaceChildren(...next.worlds.map((world) => { const option = document.createElement("option"); option.value = world.id; option.textContent = world.label; return option; }));
-    }
-    selector.disabled = next.worlds.length < 2; selector.value = state.world;
+    const worlds = allWorlds(), worldChanged = !worlds.some((world) => world.id === state.world);
+    if (worldChanged) { state.world = worlds[0]?.id || ""; state.fitPending = true; state.selectedTown = ""; }
+    renderWorldSelector();
     if (oldSignature !== JSON.stringify(next.towns) + state.world) renderTownList();
     if (state.fitPending && currentWorld()) { fitAll(); state.fitPending = false; }
     renderStatus(); requestDraw();
-    if (!next.worlds.length) { $("map-empty").hidden = false; $("map-empty-title").textContent = "서버의 첫 지도 전송을 기다려요"; $("map-empty-text").textContent = "저장된 월드가 준비되면 지형과 마을 영역이 자동으로 나타나요."; }
+    if (!worlds.length) { $("map-empty").hidden = false; $("map-empty-title").textContent = "서버의 첫 지도 전송을 기다려요"; $("map-empty-text").textContent = "저장된 월드가 준비되면 지형과 마을 영역이 자동으로 나타나요."; }
+  }
+
+  function renderWorldSelector() {
+    const worlds = allWorlds();
+    const selector = $("map-world");
+    if (Array.from(selector.options).map((option) => `${option.value}:${option.textContent}`).join("|") !== worlds.map((world) => `${world.id}:${world.label}`).join("|")) {
+      selector.replaceChildren(...worlds.map((world) => { const option = document.createElement("option"); option.value = world.id; option.textContent = world.label; return option; }));
+    }
+    selector.disabled = worlds.length < 2; selector.value = state.world;
+  }
+
+  function renderPlayerList() {
+    const list = $("map-player-list"), players = livePlayers();
+    const key = JSON.stringify(players) + state.world;
+    $("map-player-count").textContent = String(players.length);
+    $("map-player-status").textContent = state.playersFailed ? "위치 연결이 끊겨 표시를 숨겼어요." : state.playerFeed?.state === "live" && players.length ? "약 5초마다 갱신 · 16×16블록 단위" : state.playerFeed?.state === "live" ? "표시할 접속자가 없어요." : "실시간 위치 전송을 기다리고 있어요.";
+    if (list.dataset.signature === key) return;
+    const focusedName = list.contains(document.activeElement) ? document.activeElement.dataset.playerName : null;
+    list.dataset.signature = key; list.replaceChildren();
+    for (const player of players) {
+      const item = document.createElement("li"), button = document.createElement("button"), strong = document.createElement("strong"), small = document.createElement("small");
+      button.type = "button"; button.dataset.playerName = player.name;
+      strong.textContent = player.name; small.textContent = `${WORLD_LABELS[player.world]} · 청크 ${player.chunkX}, ${player.chunkZ}`;
+      button.append(strong, small); item.append(button); list.append(item);
+      button.addEventListener("click", () => { state.world = player.world; state.selectedTown = ""; clearPin(); renderWorldSelector(); renderTownList(); fit(chunkBounds(player)); announce(`${player.name}의 대략적인 위치. 청크 X ${player.chunkX}, Z ${player.chunkZ}. 정확한 좌표와 높이는 공개하지 않아요.`); });
+      if (focusedName === player.name) button.focus({ preventScroll: true });
+    }
+  }
+
+  async function fetchPlayers() {
+    if (state.playersBusy) return;
+    state.playersBusy = true;
+    const controller = new AbortController(), timer = setTimeout(() => controller.abort(), 8000);
+    try {
+      const response = await fetch(`${endpoint}/players`, { signal: controller.signal, cache: "no-store", credentials: "omit", headers: { Accept: "application/json" } });
+      if (!response.ok) throw new Error("위치 연결 대기");
+      const body = await response.text(); if (body.length > 256 * 1024) throw new Error("응답 제한");
+      state.playerFeed = validateChunkPlayers(JSON.parse(body)); state.playersFailed = false;
+    } catch { state.playersFailed = true; state.playerFeed = null; }
+    finally { clearTimeout(timer); state.playersBusy = false; renderWorldSelector(); renderPlayerList(); requestDraw(); }
   }
 
   async function fetchMap() {
@@ -335,7 +422,7 @@
   $("map-zoom-in").addEventListener("click", () => zoomAt(state.view.width / 2, state.view.height / 2, 1.5));
   $("map-zoom-out").addEventListener("click", () => zoomAt(state.view.width / 2, state.view.height / 2, 1 / 1.5));
   $("map-fit").addEventListener("click", () => { state.selectedTown = ""; fitAll(); renderTownList(); announce("현재 차원의 모든 마을을 함께 볼 수 있도록 지도를 맞췄어요."); });
-  $("map-refresh").addEventListener("click", fetchMap); $("clear-coordinate").addEventListener("click", () => { clearPin(); canvas.focus(); });
+  $("map-refresh").addEventListener("click", () => { fetchMap(); fetchPlayers(); }); $("clear-coordinate").addEventListener("click", () => { clearPin(); canvas.focus(); });
   $("map-world").addEventListener("change", (event) => { state.world = event.target.value; state.selectedTown = ""; clearPin(); renderTownList(); fitAll(); requestDraw(); });
   $("copy-coordinate").addEventListener("click", async () => {
     if (!state.pin) return;
@@ -347,7 +434,8 @@
     } catch { $("copy-coordinate").textContent = "직접 선택해 주세요"; const selection = window.getSelection(), range = document.createRange(); range.selectNodeContents($("selected-coordinate")); selection.removeAllRanges(); selection.addRange(range); announce("자동 복사가 안 돼요. 표시된 좌표를 직접 선택해 복사해 주세요."); }
   });
   new ResizeObserver(resize).observe($("map-viewport"));
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) fetchMap(); });
-  resize(); fetchMap();
-  setInterval(() => { if (!document.hidden) fetchMap(); renderStatus(); }, 5000);
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { fetchMap(); fetchPlayers(); } });
+  resize(); fetchMap(); fetchPlayers();
+  setInterval(() => { if (!document.hidden) { fetchMap(); fetchPlayers(); } renderStatus(); requestDraw(); }, 5000);
 }());
+

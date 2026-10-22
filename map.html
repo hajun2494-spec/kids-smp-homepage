@@ -4,12 +4,12 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#071612" />
-    <meta name="description" content="EVERGREEN SMP의 지형과 건축물, 마을 영역을 위에서 살펴보세요. 플레이어 위치는 공개하지 않습니다." />
+    <meta name="description" content="EVERGREEN SMP의 지형과 건축물, 마을 영역을 살펴보세요. 접속자 위치는 1청크(16×16블록) 단위로만 공개합니다." />
     <title>마을 지도 | EVERGREEN SMP</title>
     <link rel="icon" href="evergreen-server-icon-64.png" type="image/png" />
-    <link rel="stylesheet" href="map.css?v=20261020-map1" />
+    <link rel="stylesheet" href="map.css?v=20261022-chunk1" />
     <script src="presence-config.js?v=20261016-live1" defer></script>
-    <script src="map.js?v=20261020-map1" defer></script>
+    <script src="map.js?v=20261022-chunk1" defer></script>
   </head>
   <body>
     <header class="map-header">
@@ -19,7 +19,7 @@
     <main>
       <div class="map-heading">
         <div><p class="eyebrow">EXPLORE OUR WORLD</p><h1>우리의 이야기가 쌓이는 지도.</h1><p class="map-intro">지형과 건축물을 둘러보고, 함께 살아가는 마을을 찾아보세요.</p></div>
-        <span class="privacy-badge"><span aria-hidden="true">◈</span> 플레이어 위치 비공개</span>
+        <span class="privacy-badge"><span aria-hidden="true">◈</span> 플레이어 위치는 1청크 단위만</span>
       </div>
       <div class="map-shell">
         <aside class="map-sidebar" aria-label="지도 정보 및 마을 목록">
@@ -27,7 +27,8 @@
           <label class="world-label" for="map-world">차원</label><select id="map-world" disabled><option value="">오버월드</option></select>
           <ul id="town-list" class="town-list" aria-label="마을 목록"><li class="town-empty">마을 정보를 불러오는 중이에요.</li></ul>
           <section class="selected-town" id="selected-town" hidden aria-labelledby="selected-town-title"><p class="eyebrow">SELECTED TOWN</p><h3 id="selected-town-title"></h3><dl><div><dt>북서쪽</dt><dd id="town-northwest"></dd></div><div><dt>남동쪽</dt><dd id="town-southeast"></dd></div><div><dt>영역 크기</dt><dd id="town-area"></dd></div></dl></section>
-          <div class="map-data-note"><strong>월드에서 직접 가져온 지도</strong><p>마을 정보는 약 5초마다, 지형과 건축물은 월드 저장 후 반영돼요. 현재 마을 주변의 지형을 제공해요. 미생성·아직 렌더링되지 않은 지역은 빈 영역으로 표시돼요.</p><p>플레이어 좌표와 이동 경로는 표시하지 않아요.</p></div>
+          <section class="map-players" aria-labelledby="map-players-title"><p class="eyebrow">ONLINE EXPLORERS</p><h2 id="map-players-title">접속자 위치 <span id="map-player-count">0</span></h2><p id="map-player-status" role="status">실시간 위치 전송을 기다리고 있어요.</p><ul id="map-player-list" aria-label="접속자의 대략적인 위치"></ul></section>
+          <div class="map-data-note"><strong>월드에서 직접 가져온 지도</strong><p>마을 정보와 접속자 위치는 약 5초마다, 지형과 건축물은 월드 저장 후 반영돼요. 현재 마을 주변의 지형을 제공해요. 미생성·아직 렌더링되지 않은 지역은 빈 영역으로 표시돼요.</p><p>노란 영역은 접속자가 있는 1청크(16×16블록)예요. 정확한 좌표·높이·이동 경로는 공개하지 않고, 연결이 끊기면 위치를 숨겨요.</p></div>
         </aside>
         <section class="map-main" aria-label="지형 지도">
           <div class="map-statusbar"><span id="map-status" class="status-chip" data-state="loading">연결 중</span><span id="map-updated">서버의 지도 정보를 기다리고 있어요.</span><button id="map-refresh" type="button" title="지도 정보 새로고침">↻ <span>새로고침</span></button></div>
@@ -40,7 +41,7 @@
             <p class="map-hover" id="map-hover" aria-hidden="true">X — · Z —</p>
             <div class="coordinate-card" id="coordinate-card" hidden><div><span>선택한 위치</span><strong id="selected-coordinate"></strong></div><button type="button" id="copy-coordinate">좌표 복사</button><button type="button" id="clear-coordinate" aria-label="선택 좌표 닫기">×</button></div>
           </div>
-          <div class="map-footer"><p id="map-instructions">드래그로 이동 · 휠/두 손가락으로 확대 · 클릭/터치로 X·Z 좌표 확인</p><span><i aria-hidden="true"></i> 마을 보호 영역</span></div>
+          <div class="map-footer"><p id="map-instructions">드래그로 이동 · 휠/두 손가락으로 확대 · 클릭/터치로 지형 좌표 확인</p><span><i aria-hidden="true"></i> 마을 보호 영역 <b class="player-legend" aria-hidden="true"></b> 접속자 1청크</span></div>
         </section>
       </div>
       <p class="map-freshness" id="terrain-updated">지도 정보의 갱신 상태는 서버 접속 가능 여부와 다를 수 있어요.</p>
@@ -50,3 +51,4 @@
     <footer><span>EVERGREEN SMP</span><a href="index.html">홈페이지로 돌아가기 ↗</a></footer>
   </body>
 </html>
+
