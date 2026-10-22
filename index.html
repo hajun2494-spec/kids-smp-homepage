@@ -99,6 +99,91 @@
         height: 100%;
         border: 0;
       }
+      .main-nav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .main-nav > a:not(.mini-cta) {
+        color: var(--mint);
+        font-size: 0.88rem;
+        font-weight: 800;
+        white-space: nowrap;
+      }
+      .vote-panel {
+        margin-top: 32px;
+        padding: clamp(22px, 3vw, 36px);
+        border: 1px solid var(--line);
+        background: rgba(6, 17, 14, 0.55);
+        scroll-margin-top: 120px;
+      }
+      .vote-heading > p:first-child {
+        margin: 0 0 8px;
+        color: var(--mint);
+        font-size: 0.68rem;
+        font-weight: 800;
+        letter-spacing: 0.16em;
+      }
+      .vote-heading h3 {
+        margin: 0 0 8px;
+        font-size: clamp(1.35rem, 2.4vw, 1.8rem);
+        word-break: keep-all;
+      }
+      .vote-heading > p:last-child {
+        margin: 0;
+        color: var(--muted);
+        font-size: 0.94rem;
+        word-break: keep-all;
+      }
+      .vote-links {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+        margin-top: 24px;
+      }
+      .vote-card {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        min-height: 96px;
+        padding: 20px;
+        border: 1px solid var(--line);
+        background: var(--surface);
+        transition: border-color 160ms ease, background-color 160ms ease;
+      }
+      .vote-card:hover {
+        border-color: var(--mint);
+        background: var(--surface-2);
+      }
+      .vote-card:focus-visible,
+      .main-nav > a:focus-visible {
+        outline: 3px solid var(--lime);
+        outline-offset: 4px;
+      }
+      .vote-icon {
+        display: grid;
+        flex: none;
+        place-items: center;
+        width: 44px;
+        height: 44px;
+        color: var(--lime);
+        background: rgba(184, 242, 70, 0.1);
+      }
+      .vote-card:last-child .vote-icon {
+        color: var(--gold);
+        background: rgba(255, 199, 97, 0.1);
+      }
+      .vote-card strong,
+      .vote-card small { display: block; }
+      .vote-card strong { font-size: 1.08rem; }
+      .vote-card small { margin-top: 3px; color: var(--muted); font-size: 0.78rem; }
+      .vote-arrow { margin-left: auto; color: var(--mint); font-size: 1.3rem; }
+      @media (max-width: 680px) {
+        .topbar { flex-wrap: wrap; gap: 12px; }
+        .main-nav { width: 100%; justify-content: space-between; gap: 12px; }
+        .vote-links { grid-template-columns: 1fr; }
+        .vote-panel { scroll-margin-top: 160px; }
+      }
       @media (max-width: 640px) {
         .promo-video { padding: 8px 18px 42px; }
         .promo-video-heading { gap: 16px; margin-bottom: 18px; }
@@ -116,8 +201,9 @@
         <span class="brand-cube" aria-hidden="true"></span>
         <span>EVERGREEN SMP</span>
       </a>
-      <nav aria-label="주 메뉴" style="display:flex;align-items:center;gap:18px;">
-        <a href="map.html" style="color:var(--mint);font-size:.88rem;font-weight:800;white-space:nowrap;">마을 지도 ↗</a>
+      <nav class="main-nav" aria-label="주 메뉴">
+        <a href="map.html">마을 지도 ↗</a>
+        <a href="#vote">서버 추천</a>
         <a class="mini-cta" href="#join">접속하기</a>
       </nav>
     </header>
@@ -397,6 +483,26 @@
           </article>
         </div>
 
+        <section class="vote-panel" id="vote" aria-labelledby="vote-title">
+          <div class="vote-heading">
+            <p>SUPPORT EVERGREEN</p>
+            <h3 id="vote-title">서버 추천 바로가기</h3>
+            <p>마인리스트와 마인스퀘어에서 서버 소식을 확인하고 추천할 수 있어요.</p>
+          </div>
+          <div class="vote-links">
+            <a class="vote-card" href="https://minelist.kr/servers/17538-eversmp.kro.kr" target="_blank" rel="noopener noreferrer" aria-label="에버그린 마인리스트 서버 소개와 추천 페이지 (새 탭)">
+              <span class="vote-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-2.9-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" /></svg></span>
+              <span><strong>마인리스트</strong><small>서버 소개 · 추천하기</small></span>
+              <span class="vote-arrow" aria-hidden="true">↗</span>
+            </a>
+            <a class="vote-card" href="https://minesquare.kr/server/a7d098fa-c973-4041-9bfd-30dc50de47b7" target="_blank" rel="noopener noreferrer" aria-label="에버그린 마인스퀘어 서버 소개와 추천 페이지 (새 탭)">
+              <span class="vote-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3 9 5v8l-9 5-9-5V8l9-5Z" /><path d="m3 8 9 5 9-5M12 13v8" /></svg></span>
+              <span><strong>마인스퀘어</strong><small>서버 소개 · 추천하기</small></span>
+              <span class="vote-arrow" aria-hidden="true">↗</span>
+            </a>
+          </div>
+        </section>
+
         <button class="page-link" type="button" id="copy-page-link">
           🔗 이 홈페이지 링크 복사
         </button>
@@ -414,3 +520,4 @@
     <div class="toast" id="toast" role="status" aria-live="polite">복사했습니다!</div>
   </body>
 </html>
+
