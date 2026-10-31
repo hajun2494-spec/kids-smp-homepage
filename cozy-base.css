@@ -1,0 +1,113 @@
+@font-face {
+  font-family: "TuktakPotato";
+  src: url("tuktakpotato.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+  --font-cozy: "TuktakPotato", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  --bg: #fff9ec;
+  --surface: #fffdf6;
+  --surface-2: #e4edda;
+  --ink: #284534;
+  --muted: #687768;
+  --lime: #356344;
+  --mint: #3d7251;
+  --gold: #936628;
+  --line: #d5dfc8;
+  --shadow: 0 7px 0 #dce3ce, 0 20px 46px #294d3510;
+  color-scheme: light;
+  font-synthesis: none;
+}
+body, button, input, textarea, select, code, kbd, pre {
+  font-family: var(--font-cozy);
+}
+::selection { color: #fffdf6; background: #52744b; }
+:focus-visible { outline: 3px solid #b07744; outline-offset: 5px; }
+
+/* The map keeps its real terrain imagery, controls, privacy and live data. */
+.map-header { background: #fff9ecee; border-bottom: 1px solid var(--line); }
+.map-brand { font-weight: 400; letter-spacing: .015em; font-size: 23px; }
+.map-header nav { font-size: 17px; }
+.map-header nav a[aria-current] { text-decoration: underline; text-underline-offset: 7px; }
+.map-header .brand-cube { border-radius: 7px 7px 3px 7px; background: #8ba96d; box-shadow: inset -4px -4px #5e834c; }
+body:has(.map-shell) { background: radial-gradient(#cfdbc54d .8px,transparent .8px) 0 0/18px 18px, var(--bg); font-size: 17px; }
+.map-heading h1 { font-weight: 400; letter-spacing: -.02em; font-size: clamp(30px,3.4vw,45px); }
+.map-intro { font-size: 17px; }
+.map-heading .eyebrow, .map-sidebar .eyebrow { color: #5c7a50; font-weight: 400; font-size: 12px; letter-spacing: .08em; }
+.privacy-badge { background: #e8efd9; border: 1px solid #c4d2b1; color: #41613b; border-radius: 14px; font-size: 14px; }
+.map-shell { border-radius: 28px; overflow: hidden; box-shadow: var(--shadow); background: var(--surface); border-color: #bdcdb0; }
+.map-sidebar { background: #f2f4e7; padding: 25px 20px; }
+.sidebar-heading h2 { font-size: 25px; font-weight: 400; }
+.sidebar-heading>p:last-child { font-size: 15px; }
+.world-label { font-size: 14px; }
+.map-sidebar select { border-radius: 12px; background: #fffdf6; font-size: 16px; }
+.town-list button { background: #fffdf6; border: 1px solid #d5dfc8; border-radius: 15px; padding: 13px 12px; }
+.town-list button:hover, .town-list button[aria-pressed=true] { background: #e3ecd5; border-color: #7b9b68; }
+.town-list strong { font-size: 18px; font-weight: 400; }
+.town-list small { font-size: 13px; }
+.town-list .town-dot { border-radius: 3px; box-shadow: none; }
+.town-empty { font-size: 16px; }
+.selected-town h3 { font-size: 22px; font-weight: 400; }
+.selected-town dl { font-size: 15px; }
+.map-data-note, .map-data-note strong { font-size: 14px; font-weight: 400; }
+.map-statusbar { font-size: 14px; background: #fffdf6; padding: 14px 18px; }
+.status-chip { font-weight: 400; }
+.status-chip:before { border-radius: 50%; box-shadow: none; }
+#map-refresh { font-size: 16px; border-radius: 10px; padding: 6px 9px; background: #e8efd9; }
+.map-empty-overlay { background: radial-gradient(ellipse,#f4f6e9f0,#e3e9d5c0); }
+.map-empty-overlay strong { font-size: 26px; font-weight: 400; }
+.map-empty-overlay p { color: #53674a; font-size: 17px; }
+#world-map { position: absolute; inset: 0; width: 100%; height: 100%; }
+.map-controls { gap: 7px; }
+.map-controls button { background: #fffdf6f5; border: 1px solid #bdcdb0; border-radius: 11px; color: #284534; box-shadow: 0 3px 0 #294d3520; }
+.map-controls button:hover { background: #e4edda; }
+.map-compass, .map-compass b { color: #fffdf6; }
+.map-scale, .map-hover { color: #fffdf6; background: #284534dd; font-family: var(--font-cozy); border-radius: 7px; font-size: 13px; }
+.coordinate-card { border-radius: 18px; background: #fff9ec; border-color: #bdcdb0; box-shadow: 0 5px 0 #28453433,0 10px 25px #28453433; }
+.coordinate-card span { font-size: 13px; }
+.coordinate-card strong { font-size: 18px; font-family: var(--font-cozy); }
+.coordinate-card button { border-radius: 10px; background: #e4edda; font-size: 15px; font-weight: 400; }
+.map-footer { padding: 14px 18px; background: #fffdf6; font-size: 13px; }
+.map-freshness { font-size: 14px; }
+.map-players h2 { font-size: 22px; font-weight: 400; }
+.map-players h2 span { color: #946728; }
+.map-players>p:not(.eyebrow) { font-size: 14px; }
+.map-players button { background: #fff8e3; border: 1px solid #ddcd9f; border-radius: 12px; }
+.map-players button:hover { background: #f3e6bf; }
+.map-players strong { color: #5d542c; font-size: 17px; font-weight: 400; }
+.map-players small { font-size: 12px; }
+body:has(.map-shell)>footer { font-size: 15px; }
+body:has(.map-shell)>footer span { font-weight: 400; letter-spacing: .04em; }
+@media (max-width: 850px) {
+  .map-header { gap: 15px; }
+  .map-brand { font-size: 20px; }
+  .map-header nav { font-size: 15px; gap: 15px; }
+  .map-heading h1 { font-size: 35px; }
+  .map-sidebar { padding: 20px 15px; }
+}
+@media (max-width: 620px) {
+  .map-header { padding: 18px; }
+  .map-brand { font-size: 20px; }
+  .map-header nav { margin-left: 0; width: 100%; font-size: 16px; }
+  .map-heading h1 { font-size: 31px; }
+  .map-intro { font-size: 16px; }
+  .privacy-badge { font-size: 13px; white-space: normal; }
+  .map-shell { border-radius: 20px; }
+  .sidebar-heading h2 { font-size: 23px; }
+  .sidebar-heading>p:last-child { font-size: 14px; }
+  .town-list strong { font-size: 17px; }
+  .selected-town h3 { font-size: 18px; }
+  .selected-town dl { font-size: 13px; }
+  .map-statusbar { font-size: 12px; padding: 10px 12px; }
+  .map-players h2 { font-size: 18px; }
+  .map-players>p:not(.eyebrow) { font-size: 13px; }
+  .map-players strong { font-size: 16px; }
+  .map-players small { font-size: 12px; }
+  .coordinate-card { gap: 7px; padding: 10px; }
+  .coordinate-card strong { font-size: 16px; }
+  .coordinate-card button { font-size: 13px; }
+  .map-footer { font-size: 12px; }
+  .map-freshness { font-size: 13px; }
+}
