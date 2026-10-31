@@ -90,7 +90,7 @@
         background: #fff9ec;
         box-shadow: var(--shadow);
       }
-      .promo-video-player video {
+      .promo-video-player iframe {
         position: absolute;
         inset: 0;
         display: block;
@@ -253,17 +253,17 @@
             <h2 id="promo-video-title">먼저, 영상으로 만나보세요.</h2>
             <p class="promo-video-description">EVERGREEN SMP의 분위기를 홍보 영상으로 확인해 보세요.</p>
           </div>
-          <a class="promo-video-link" href="EVERGREEN-cozy-promo-1080p.mp4" target="_blank" rel="noopener noreferrer" aria-label="EVERGREEN SMP 새 홍보영상 크게 보기 (새 창)">
+          <a class="promo-video-link" href="https://youtu.be/34Fh6jDjcYA" target="_blank" rel="noopener noreferrer" aria-label="EVERGREEN SMP 새 홍보영상 YouTube에서 크게 보기 (새 창)">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 2.8v10.4L13 8 5 2.8Z" /></svg>
             영상 크게 보기 <span aria-hidden="true">↗</span>
           </a>
         </div>
         <div class="promo-video-player">
-          <video controls playsinline preload="metadata" width="1920" height="1080"
-            poster="evergreen-cozy-video-poster.jpg" aria-label="EVERGREEN SMP 새 홍보영상">
-            <source src="EVERGREEN-cozy-promo-1080p.mp4" type="video/mp4" />
-            동영상을 재생할 수 없다면 <a href="EVERGREEN-cozy-promo-1080p.mp4">홍보영상 파일을 열어 주세요.</a>
-          </video>
+          <iframe width="1920" height="1080"
+            src="https://www.youtube-nocookie.com/embed/34Fh6jDjcYA?rel=0"
+            title="EVERGREEN SMP 새 홍보영상" loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
       </section>
 
