@@ -14,9 +14,13 @@
       content="새로운 문명을 시작하거나 함께할 문명에 합류하세요. 전쟁과 약탈 없이 편하게 탐험하고 건축하는 어린이·어른이 야생 서버."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="evergreen-smp-logo.jpg" />
+    <meta property="og:image" content="https://hajun2494-spec.github.io/kids-smp-homepage/evergreen-smp-logo.jpg?v=20261031-cozy" />
+    <meta property="og:image:alt" content="EVERGREEN SMP 로고 – 같이, 천천히, 오래오래" />
     <title>EVERGREEN SMP | Java + Bedrock 26.3</title>
-    <link rel="icon" type="image/png" href="evergreen-server-icon-64.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="evergreen-favicon32.png?v=20261031-cozy" />
+    <link rel="icon" type="image/png" sizes="64x64" href="evergreen-server-icon-64.png?v=20261031-cozy" />
+    <link rel="shortcut icon" href="favicon.ico?v=20261031-cozy" />
+    <link rel="apple-touch-icon" href="evergreen-cozy-brand-square.png?v=20261031-cozy" />
     <link rel="preload" href="tuktakpotato.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="styles.css?v=20261017-faces1" />
     <style>
@@ -83,16 +87,17 @@
         overflow: hidden;
         border: 1px solid var(--line);
         border-radius: 16px;
-        background: #000;
+        background: #fff9ec;
         box-shadow: var(--shadow);
       }
-      .promo-video-player iframe {
+      .promo-video-player video {
         position: absolute;
         inset: 0;
         display: block;
         width: 100%;
         height: 100%;
         border: 0;
+        object-fit: cover;
       }
       .main-nav {
         display: flex;
@@ -186,7 +191,7 @@
         .promo-video-description { font-size: 0.88rem; }
       }
     </style>
-    <link rel="stylesheet" href="cozy-base.css?v=20261031" />
+    <link rel="stylesheet" href="cozy-base.css?v=20261031-brand2" />
     <link rel="stylesheet" href="cozy-theme.css?v=20261031" />
     <script src="script.js" defer></script>
     <script src="presence-config.js?v=20261016-live1" defer></script>
@@ -195,7 +200,7 @@
   <body>
     <header class="topbar">
       <a class="brand" href="#top" aria-label="EVERGREEN SMP 홈">
-        <span class="brand-cube" aria-hidden="true"></span>
+        <img class="brand-mark" src="evergreen-server-icon-64.png?v=20261031-cozy" width="34" height="34" alt="" aria-hidden="true" decoding="async" />
         <span>EVERGREEN SMP</span>
       </a>
       <nav class="main-nav" aria-label="주 메뉴">
@@ -236,7 +241,7 @@
         </div>
 
         <figure class="hero-art">
-          <img src="evergreen-smp-logo.jpg" alt="숲을 배경으로 한 EVERGREEN SMP 3D 블록 로고" />
+          <img src="evergreen-smp-logo.jpg?v=20261031-cozy" alt="EVERGREEN SMP 로고 – 같이, 천천히, 오래오래" />
           <figcaption>집을 짓고, 이웃을 만나고, 이야기를 쌓아요.</figcaption>
         </figure>
       </section>
@@ -248,22 +253,17 @@
             <h2 id="promo-video-title">먼저, 영상으로 만나보세요.</h2>
             <p class="promo-video-description">EVERGREEN SMP의 분위기를 홍보 영상으로 확인해 보세요.</p>
           </div>
-          <a class="promo-video-link" href="https://youtu.be/MtHYbx9ljTc" target="_blank" rel="noopener noreferrer" aria-label="EVERGREEN SMP 홍보영상 YouTube에서 보기 (새 창)">
+          <a class="promo-video-link" href="EVERGREEN-cozy-promo-1080p.mp4" target="_blank" rel="noopener noreferrer" aria-label="EVERGREEN SMP 새 홍보영상 크게 보기 (새 창)">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 2.8v10.4L13 8 5 2.8Z" /></svg>
-            YouTube에서 보기 <span aria-hidden="true">↗</span>
+            영상 크게 보기 <span aria-hidden="true">↗</span>
           </a>
         </div>
         <div class="promo-video-player">
-          <iframe
-            width="1280"
-            height="720"
-            src="https://www.youtube-nocookie.com/embed/MtHYbx9ljTc?rel=0"
-            title="EVERGREEN SMP 홍보영상"
-            loading="lazy"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin"
-            allowfullscreen
-          ></iframe>
+          <video controls playsinline preload="metadata" width="1920" height="1080"
+            poster="evergreen-cozy-video-poster.jpg" aria-label="EVERGREEN SMP 새 홍보영상">
+            <source src="EVERGREEN-cozy-promo-1080p.mp4" type="video/mp4" />
+            동영상을 재생할 수 없다면 <a href="EVERGREEN-cozy-promo-1080p.mp4">홍보영상 파일을 열어 주세요.</a>
+          </video>
         </div>
       </section>
 

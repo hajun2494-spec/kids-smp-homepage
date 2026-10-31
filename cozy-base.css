@@ -23,6 +23,13 @@
 body, button, input, textarea, select, code, kbd, pre {
   font-family: var(--font-cozy);
 }
+.brand-mark {
+  display: block;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  object-fit: contain;
+}
 ::selection { color: #fffdf6; background: #52744b; }
 :focus-visible { outline: 3px solid #b07744; outline-offset: 5px; }
 
@@ -88,6 +95,7 @@ body:has(.map-shell)>footer span { font-weight: 400; letter-spacing: .04em; }
   .map-sidebar { padding: 20px 15px; }
 }
 @media (max-width: 620px) {
+  .brand-mark { width: 29px; height: 29px; flex-basis: 29px; }
   .map-header { padding: 18px; }
   .map-brand { font-size: 20px; }
   .map-header nav { margin-left: 0; width: 100%; font-size: 16px; }
