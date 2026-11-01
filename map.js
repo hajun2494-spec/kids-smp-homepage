@@ -1,7 +1,7 @@
 (function () {
   "use strict";
   const TILE_SIZE = 512;
-  const MAX_TERRAIN_TILES = 256;
+  const MAX_TERRAIN_TILES = 512;
   const WORLD_LIMIT = 30000000;
   const PALETTE = ["#63ddb4", "#ffc761", "#a6b6ff", "#f2a6bf", "#b8f246"];
   const integer = (value, limit = WORLD_LIMIT) => Number.isInteger(value) && Math.abs(value) <= limit;
@@ -304,13 +304,18 @@
 
   function renderSnapshot(next) {
     const oldSignature = state.data ? JSON.stringify(state.data.towns) + state.world : "";
+    const previousWorld = currentWorld();
+    const selectedWorldWasEmpty = Boolean(previousWorld && !previousWorld.tiles.length && !currentTowns().length);
     reconcileTerrainTiles(state.tiles, state.data?.worlds, next.worlds);
     state.data = next;
     const worlds = allWorlds(), worldChanged = !worlds.some((world) => world.id === state.world);
     if (worldChanged) { state.world = worlds[0]?.id || ""; state.fitPending = true; state.selectedTown = ""; }
     renderWorldSelector();
     if (oldSignature !== JSON.stringify(next.towns) + state.world) renderTownList();
-    if (state.fitPending && currentWorld()) { fitAll(); state.fitPending = false; }
+    // A dimension may be selected before its first saved tile finishes rendering.
+    // Fit that first arrival once; normal terrain refreshes keep the user's camera.
+    const receivedFirstTerrain = selectedWorldWasEmpty && currentWorld()?.tiles.length > 0;
+    if ((state.fitPending || receivedFirstTerrain) && currentWorld()) { fitAll(); state.fitPending = false; }
     renderStatus(); requestDraw();
     if (!worlds.length) { $("map-empty").hidden = false; $("map-empty-title").textContent = "서버의 첫 지도 전송을 기다려요"; $("map-empty-text").textContent = "저장된 월드가 준비되면 지형과 마을 영역이 자동으로 나타나요."; }
   }
