@@ -1,6 +1,7 @@
 (function () {
   "use strict";
   const TILE_SIZE = 512;
+  const MAX_TERRAIN_TILES = 256;
   const WORLD_LIMIT = 30000000;
   const PALETTE = ["#63ddb4", "#ffc761", "#a6b6ff", "#f2a6bf", "#b8f246"];
   const integer = (value, limit = WORLD_LIMIT) => Number.isInteger(value) && Math.abs(value) <= limit;
@@ -54,7 +55,7 @@
     const origin = new URL(endpoint).origin;
     const worldIds = new Set();
     const worlds = raw.worlds.map((world) => {
-      if (!world || !/^[a-z0-9_-]{1,40}$/.test(world.id) || worldIds.has(world.id) || !label(world.label) || !Array.isArray(world.tiles) || world.tiles.length > 64) throw new Error("차원 정보가 올바르지 않아요.");
+      if (!world || !/^[a-z0-9_-]{1,40}$/.test(world.id) || worldIds.has(world.id) || !label(world.label) || !Array.isArray(world.tiles) || world.tiles.length > MAX_TERRAIN_TILES) throw new Error("차원 정보가 올바르지 않아요.");
       worldIds.add(world.id);
       const seen = new Set();
       const tiles = world.tiles.map((tile) => {
@@ -69,7 +70,7 @@
       });
       return { id: world.id, label: world.label, tiles };
     });
-    if (worlds.reduce((total, world) => total + world.tiles.length, 0) > 64) throw new Error("지형 타일 수가 너무 많아요.");
+    if (worlds.reduce((total, world) => total + world.tiles.length, 0) > MAX_TERRAIN_TILES) throw new Error("지형 타일 수가 너무 많아요.");
     const townIds = new Set();
     const towns = raw.towns.map((town) => {
       if (!town || !label(town.id, 80) || townIds.has(town.id) || !label(town.name) || !worldIds.has(town.world) || ![town.minX, town.maxX, town.minZ, town.maxZ].every((x) => integer(x)) || town.minX > town.maxX || town.minZ > town.maxZ) throw new Error("마을 영역 정보가 올바르지 않아요.");
@@ -91,7 +92,21 @@
   function viewToWorld(x, y, view) { return { x: view.x + (x - view.width / 2) / view.scale, z: view.z + (y - view.height / 2) / view.scale }; }
   function worldToView(x, z, view) { return { x: (x - view.x) * view.scale + view.width / 2, y: (z - view.z) * view.scale + view.height / 2 }; }
   function coordinateText(point) { return `X ${Math.floor(point.x)} · Z ${Math.floor(point.z)}`; }
-  const pure = { mapEndpoint, validateMap, validateChunkPlayers, liveChunkPlayers, chunkBounds, worldBounds, viewToWorld, worldToView, coordinateText };
+  function reconcileTerrainTiles(cache, previousWorlds, nextWorlds, phase = "state", queued = "queued") {
+    const previous = new Map(), allowed = new Set();
+    for (const world of previousWorlds || []) for (const tile of world.tiles) previous.set(`${world.id}:${tile.regionX},${tile.regionZ}`, cache.get(tile.url));
+    for (const world of nextWorlds) for (const tile of world.tiles) {
+      allowed.add(tile.url);
+      if (!cache.has(tile.url)) {
+        const old = previous.get(`${world.id}:${tile.regionX},${tile.regionZ}`);
+        cache.set(tile.url, { [phase]: queued, image: null, fallbackImage: old?.image || old?.fallbackImage || null, tile, retryAt: 0 });
+      }
+    }
+    // Keep one record per current tile; a replacement retains only its last
+    // completed image until the new content-addressed image has loaded.
+    for (const [url, record] of cache) if (!allowed.has(url)) { record.cancel?.(); cache.delete(url); }
+  }
+  const pure = { mapEndpoint, validateMap, validateChunkPlayers, liveChunkPlayers, chunkBounds, worldBounds, viewToWorld, worldToView, coordinateText, reconcileTerrainTiles };
   if (typeof module !== "undefined" && module.exports) module.exports = pure;
   if (typeof document === "undefined") return;
 
@@ -164,7 +179,7 @@
   function loadTile(tile) {
     let record = state.tiles.get(tile.url);
     if (record) return record;
-    record = { state: "queued", image: null, tile, retryAt: 0 }; state.tiles.set(tile.url, record);
+    record = { state: "queued", image: null, fallbackImage: null, tile, retryAt: 0 }; state.tiles.set(tile.url, record);
     return record;
   }
 
@@ -178,9 +193,10 @@
       const timer = setTimeout(() => { finish(false); image.src = ""; }, 15000);
       function finish(success) {
         if (settled) return; settled = true; clearTimeout(timer);
-        state.tileActive--; record.state = success ? "loaded" : "error"; record.image = success ? image : null; record.retryAt = Date.now() + 30000;
+        state.tileActive--; record.state = success ? "loaded" : "error"; record.image = success ? image : null; if (success) record.fallbackImage = null; record.cancel = null; record.retryAt = Date.now() + 30000;
         requestDraw();
       }
+      record.cancel = () => { finish(false); image.src = ""; };
       image.onload = () => finish(image.naturalWidth === TILE_SIZE && image.naturalHeight === TILE_SIZE);
       image.onerror = () => finish(false);
       image.src = url;
@@ -200,7 +216,7 @@
       visibleTiles++;
       const record = loadTile(tile); record.visible = true;
       if (record.state === "error") { badTiles++; if (Date.now() >= record.retryAt) record.state = "queued"; }
-      if (record.state === "loaded") { ctx.imageSmoothingEnabled = false; ctx.drawImage(record.image, pos.x, pos.y, size + 0.2, size + 0.2); }
+      if (record.image || record.fallbackImage) { ctx.imageSmoothingEnabled = false; ctx.drawImage(record.image || record.fallbackImage, pos.x, pos.y, size + 0.2, size + 0.2); }
       else { ctx.fillStyle = "#12261c99"; ctx.fillRect(pos.x, pos.y, size, size); if (size > 150) { ctx.fillStyle = "#abc0b480"; ctx.font = "11px sans-serif"; ctx.textAlign = "center"; ctx.fillText(record.state === "error" ? "지형을 불러오지 못했어요" : "지형 불러오는 중", pos.x + size / 2, pos.y + size / 2); } }
     }
     pumpTiles();
@@ -242,8 +258,6 @@
       if (!hasAnything) { $("map-empty-title").textContent = "아직 공개된 지도 영역이 없어요"; $("map-empty-text").textContent = "저장된 지형 또는 마을 정보가 도착하면 여기에 표시돼요."; }
       if (badTiles && badTiles === visibleTiles) $("terrain-updated").textContent = "지형 이미지를 불러오지 못했어요. 마을 영역과 좌표는 계속 확인할 수 있고, 잠시 후 자동으로 다시 불러와요.";
     }
-    // Release tiles no longer listed in the snapshot. Hashed URLs remain stable between polls.
-    if (state.data && state.tiles.size > 64) { const allowed = new Set(state.data.worlds.flatMap((entry) => entry.tiles.map((tile) => tile.url))); for (const [url, record] of state.tiles) if ((!allowed.has(url) || !record.visible) && record.state !== "loading") state.tiles.delete(url); }
   }
 
   function renderTownDetails() {
@@ -285,11 +299,12 @@
     $("map-status").dataset.state = mode;
     $("map-status").textContent = mode === "live" ? "정보 갱신 중" : mode === "pending" ? "전송 대기" : "이전 정보 표시";
     $("map-updated").textContent = state.failed ? "연결이 잠시 끊겼어요. 마지막 지도를 유지하고 있어요." : `마을 정보 ${timeText(state.data.updatedAt)} · 서울`;
-    $("terrain-updated").textContent = `지형 저장 반영 ${timeText(state.data.terrainUpdatedAt)} · 마을 정보는 약 5초마다 갱신 · 지형과 건축물은 월드 저장 후 반영 · 서버 접속 가능 여부와는 달라요.`;
+    $("terrain-updated").textContent = `지형 저장 반영 ${timeText(state.data.terrainUpdatedAt)} · 지형·마을은 약 5초마다 확인 · 새 청크와 건축물은 월드 저장 후 자동 반영돼요.`;
   }
 
   function renderSnapshot(next) {
     const oldSignature = state.data ? JSON.stringify(state.data.towns) + state.world : "";
+    reconcileTerrainTiles(state.tiles, state.data?.worlds, next.worlds);
     state.data = next;
     const worlds = allWorlds(), worldChanged = !worlds.some((world) => world.id === state.world);
     if (worldChanged) { state.world = worlds[0]?.id || ""; state.fitPending = true; state.selectedTown = ""; }
@@ -438,4 +453,5 @@
   resize(); fetchMap(); fetchPlayers();
   setInterval(() => { if (!document.hidden) { fetchMap(); fetchPlayers(); } renderStatus(); requestDraw(); }, 5000);
 }());
+
 
