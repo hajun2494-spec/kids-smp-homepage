@@ -150,7 +150,7 @@
     clampView(); requestDraw();
   }
 
-  function fitAll() { const world = currentWorld(); if (world) fit(worldBounds(world, state.data.towns)); }
+  function fitAll() { const world = currentWorld(); if (world) fit(worldBounds(world, state.data?.towns || [], false)); }
 
   function resize() {
     const rect = canvas.getBoundingClientRect();
@@ -436,7 +436,7 @@
   });
   $("map-zoom-in").addEventListener("click", () => zoomAt(state.view.width / 2, state.view.height / 2, 1.5));
   $("map-zoom-out").addEventListener("click", () => zoomAt(state.view.width / 2, state.view.height / 2, 1 / 1.5));
-  $("map-fit").addEventListener("click", () => { state.selectedTown = ""; fitAll(); renderTownList(); announce("현재 차원의 모든 마을을 함께 볼 수 있도록 지도를 맞췄어요."); });
+  $("map-fit").addEventListener("click", () => { state.selectedTown = ""; fitAll(); renderTownList(); announce("현재 차원의 탐험한 지형과 모든 마을을 함께 볼 수 있도록 지도를 맞췄어요."); });
   $("map-refresh").addEventListener("click", () => { fetchMap(); fetchPlayers(); }); $("clear-coordinate").addEventListener("click", () => { clearPin(); canvas.focus(); });
   $("map-world").addEventListener("change", (event) => { state.world = event.target.value; state.selectedTown = ""; clearPin(); renderTownList(); fitAll(); requestDraw(); });
   $("copy-coordinate").addEventListener("click", async () => {

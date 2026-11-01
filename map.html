@@ -14,7 +14,7 @@
     <link rel="preload" href="tuktakpotato.ttf" as="font" type="font/ttf" crossorigin />
     <link rel="stylesheet" href="cozy-base.css?v=20261031-brand2" />
     <script src="presence-config.js?v=20261016-live1" defer></script>
-    <script src="map.js?v=20261101-live2" defer></script>
+    <script src="map.js?v=20261101-live3" defer></script>
   </head>
   <body>
     <header class="map-header">
@@ -33,7 +33,7 @@
           <ul id="town-list" class="town-list" aria-label="마을 목록"><li class="town-empty">마을 정보를 불러오는 중이에요.</li></ul>
           <section class="selected-town" id="selected-town" hidden aria-labelledby="selected-town-title"><p class="eyebrow">SELECTED TOWN</p><h3 id="selected-town-title"></h3><dl><div><dt>북서쪽</dt><dd id="town-northwest"></dd></div><div><dt>남동쪽</dt><dd id="town-southeast"></dd></div><div><dt>영역 크기</dt><dd id="town-area"></dd></div></dl></section>
           <section class="map-players" aria-labelledby="map-players-title"><p class="eyebrow">ONLINE EXPLORERS</p><h2 id="map-players-title">접속자 위치 <span id="map-player-count">0</span></h2><p id="map-player-status" role="status">실시간 위치 전송을 기다리고 있어요.</p><ul id="map-player-list" aria-label="접속자의 대략적인 위치"></ul></section>
-          <div class="map-data-note"><strong>월드에서 직접 가져온 지도</strong><p>마을 정보와 접속자 위치는 약 5초마다, 지형과 건축물은 월드 저장 후 반영돼요. 현재 마을 주변의 지형을 제공해요. 미생성·아직 렌더링되지 않은 지역은 빈 영역으로 표시돼요.</p><p>노란 영역은 접속자가 있는 1청크(16×16블록)예요. 정확한 좌표·높이·이동 경로는 공개하지 않고, 연결이 끊기면 위치를 숨겨요.</p></div>
+          <div class="map-data-note"><strong>월드에서 직접 가져온 지도</strong><p>마을 정보와 접속자 위치는 약 5초마다, 지형과 건축물은 월드 저장 후 반영돼요. 탐험해 저장된 지형을 자동으로 추가해요. 미생성·아직 렌더링되지 않은 지역은 빈 영역으로 표시돼요.</p><p>노란 영역은 접속자가 있는 1청크(16×16블록)예요. 정확한 좌표·높이·이동 경로는 공개하지 않고, 연결이 끊기면 위치를 숨겨요.</p></div>
         </aside>
         <section class="map-main" aria-label="지형 지도">
           <div class="map-statusbar"><span id="map-status" class="status-chip" data-state="loading">연결 중</span><span id="map-updated">서버의 지도 정보를 기다리고 있어요.</span><button id="map-refresh" type="button" title="지도 정보 새로고침">↻ <span>새로고침</span></button></div>
@@ -41,7 +41,7 @@
             <canvas id="world-map" tabindex="0" aria-label="마을 지도. 드래그로 이동하고 휠 또는 더하기·빼기 키로 확대해요. 방향키로 이동, 엔터로 화면 중앙 좌표 선택, 홈 키로 전체 보기가 가능해요." aria-describedby="map-instructions"></canvas>
             <div class="map-empty-overlay" id="map-empty"><span aria-hidden="true">▤</span><strong id="map-empty-title">지도를 펼치고 있어요</strong><p id="map-empty-text">서버에서 저장된 지형과 마을 정보를 불러옵니다.</p></div>
             <div class="map-compass" aria-label="위쪽 북쪽, 오른쪽 동쪽"><span>N</span><b aria-hidden="true">↑</b></div>
-            <div class="map-controls"><button type="button" id="map-zoom-in" aria-label="지도 확대">+</button><button type="button" id="map-zoom-out" aria-label="지도 축소">−</button><button type="button" id="map-fit" aria-label="현재 차원의 마을 전체 보기" title="마을 전체 보기">⌂</button></div>
+            <div class="map-controls"><button type="button" id="map-zoom-in" aria-label="지도 확대">+</button><button type="button" id="map-zoom-out" aria-label="지도 축소">−</button><button type="button" id="map-fit" aria-label="현재 차원의 탐험 지역 전체 보기" title="탐험 지역 전체 보기">⌂</button></div>
             <div class="map-scale" id="map-scale">— 블록</div>
             <p class="map-hover" id="map-hover" aria-hidden="true">X — · Z —</p>
             <div class="coordinate-card" id="coordinate-card" hidden><div><span>선택한 위치</span><strong id="selected-coordinate"></strong></div><button type="button" id="copy-coordinate">좌표 복사</button><button type="button" id="clear-coordinate" aria-label="선택 좌표 닫기">×</button></div>
