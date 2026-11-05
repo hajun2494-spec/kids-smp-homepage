@@ -190,6 +190,33 @@
         .promo-video-player { border-radius: 10px; }
         .promo-video-description { font-size: 0.88rem; }
       }
+      .topbar .main-nav { flex-wrap: wrap; }
+      .town-guide { scroll-margin-top: 132px; }
+      .town-guide .claim-steps article { min-width: 0; }
+      .town-guide .claim-steps p code { display: block; margin: 12px 0; line-height: 1.6; }
+      .town-guide .claim-commands div { align-items: flex-start; flex-direction: column; gap: 6px; }
+      .town-guide .claim-commands span { text-align: left; }
+      .town-guide .town-note,
+      .town-guide .town-notice {
+        margin-top: 24px;
+        padding: 22px 24px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: var(--surface-2);
+      }
+      .town-guide .town-note p { margin: 8px 0 0; color: var(--muted); font-size: 17px; }
+      .town-guide .town-notice { background: var(--paper); }
+      .town-guide .town-notice summary { cursor: pointer; color: var(--ink); }
+      .town-guide .town-notice summary:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
+      .town-guide .town-notice p { margin: 18px 0 8px; color: var(--muted); font-size: 17px; }
+      .town-guide .town-notice code { display: block; line-height: 1.7; }
+      @media (max-width: 680px) {
+        .topbar .main-nav { justify-content: flex-start; gap: 8px 14px; }
+        .topbar .main-nav .mini-cta { margin-left: auto; }
+        .town-guide { scroll-margin-top: 180px; }
+        .town-guide .town-note,
+        .town-guide .town-notice { padding: 20px; }
+      }
     </style>
     <link rel="stylesheet" href="cozy-base.css?v=20261031-brand2" />
     <link rel="stylesheet" href="cozy-theme.css?v=20261031" />
@@ -205,6 +232,7 @@
       </a>
       <nav class="main-nav" aria-label="주 메뉴">
         <a href="map.html">마을 지도 ↗</a>
+        <a href="#towns">마을 만들기</a>
         <a href="#vote">서버 추천</a>
         <a class="mini-cta" href="#join">접속하기</a>
       </nav>
@@ -393,12 +421,62 @@
           <div><code>/claim info</code><span>현재 서 있는 보호 구역 확인</span></div>
           <div><code>/claim show</code><span>내 땅의 경계 다시 보기</span></div>
         </div>
-        <p class="claim-note">선택 영역은 최소 5×5이며, 현재 1인당 총 10,000블록까지 보호할 수 있습니다.</p>
+        <p class="claim-note">선택 영역은 최소 5×5이며, 현재 1인당 보호구역의 가로×세로 면적 합계가 500,000블록까지 가능합니다.</p>
+      </section>
+
+      <section class="claim-guide town-guide" id="towns" aria-labelledby="town-title">
+        <div class="claim-heading">
+          <p class="section-number">04 / YOUR TOWN</p>
+          <h2 id="town-title">내가 만든 터전을,<br />함께 사는 마을로.</h2>
+          <p>내 보호구역을 마을로 등록하고 주민을 초대해 보세요. 아래 예시의 <strong>푸른마을</strong>은 원하는 마을 이름으로 바꾸면 됩니다.</p>
+        </div>
+
+        <div class="claim-steps" aria-label="마을 만들기 순서">
+          <article>
+            <span>STEP 01 / LAND</span>
+            <strong>먼저 내 땅을 보호해요.</strong>
+            <p><code>/claim wand</code>황금 삽으로 첫 모서리를 좌클릭하고 반대 모서리를 우클릭해요.<code>/claim create 푸른마을</code>선택한 땅을 보호구역으로 만듭니다. 이미 내 보호구역이 있다면 다음 단계로 넘어가세요.</p>
+          </article>
+          <article>
+            <span>STEP 02 / CREATE</span>
+            <strong>그 땅 안에서 마을을 만들어요.</strong>
+            <p><code>/town 푸른마을 생성</code><strong>본인 소유의 보호구역 안에 서서</strong> 입력하세요. 보호구역 소유자가 이장이 되고, 기존 땅의 범위와 소유권은 유지됩니다.</p>
+          </article>
+          <article>
+            <span>STEP 03 / TOGETHER</span>
+            <strong>함께할 주민을 등록해요.</strong>
+            <p><code>/town 푸른마을 주민 등록 &lt;닉네임&gt;</code>이장이 주민을 등록하면 해당 마을의 토지 이용 권한도 함께 적용됩니다. 서버에 접속한 적 있는 닉네임을 입력하고, 베드락은 맨 앞의 점(<code style="display:inline;margin:0;">.</code>)까지 적어 주세요.</p>
+          </article>
+        </div>
+
+        <aside class="town-note">
+          <strong>마을과 땅 보호는 하나로 연결돼요.</strong>
+          <p>보호구역 하나에 마을 하나를 등록할 수 있어요. 마을을 만들면 방문자에게 열려 있던 공개 이용 권한이 꺼집니다. 주민에게는 건축과 상자 사용 등의 권한이 생기니 믿을 수 있는 사람을 등록하고, 세부 권한은 토지 메뉴에서 확인해 주세요.</p>
+        </aside>
+
+        <div class="claim-commands" aria-label="마을 관리 명령어">
+          <div><code>/town</code><span>마을 목록과 메뉴 열기 · 합류할 마을 찾아보기</span></div>
+          <div><code>/town 푸른마을</code><span>해당 마을의 관리 메뉴 열기</span></div>
+          <div><code>/town 푸른마을 토지</code><span>마을 메뉴에서 보호 설정과 토지 관리</span></div>
+          <div><code>/town 푸른마을 주민 목록</code><span>이장과 등록된 주민 확인</span></div>
+          <div><code>/town 푸른마을 주민 제거 &lt;닉네임&gt;</code><span>주민 등록과 해당 마을의 신뢰 권한 제거 · 이장용</span></div>
+          <div><code>/town 푸른마을 공지확인</code><span>우리 마을 공지 읽기 · 주민과 이장용</span></div>
+        </div>
+
+        <details class="town-notice">
+          <summary>이장이라면, 마을 공지도 남겨 보세요.</summary>
+          <p>마을에 들어올 때 하루에 한 번 채팅으로 안내하기</p>
+          <code>/town 푸른마을 매일입장 채팅 마을 공지를 확인해 주세요!</code>
+          <p>지금 바로 채팅과 화면으로 알리기</p>
+          <code>/town 푸른마을 지금 모두 오늘은 함께 마을 길을 정비해요!</code>
+          <p>등록된 공지는 마을 메뉴 또는 위의 공지확인 명령어로 다시 읽을 수 있어요.</p>
+        </details>
+        <p class="claim-note">마을 이름은 한글·영문·숫자·밑줄(_)·하이픈(-)으로 1~24자, 공백과 중복 없이 정해 주세요. 기존 마을에 합류하고 싶다면 그 마을 이장에게 주민 등록을 요청하면 됩니다.</p>
       </section>
 
       <section class="social-guide" id="friends" aria-labelledby="social-title">
         <div class="social-heading">
-          <p class="section-number">04 / MENU &amp; FRIENDS</p>
+          <p class="section-number">05 / MENU &amp; FRIENDS</p>
           <h2 id="social-title">명령어를 외우지 말고<br />메뉴로 시작하세요.</h2>
           <p>
             채팅창에 <code>/menu</code>를 입력하면 토지 보호용 삽 받기부터
@@ -450,7 +528,7 @@
 
       <section class="join" id="join" aria-labelledby="join-title">
         <div class="join-heading">
-          <p class="section-number">05 / JOIN NOW</p>
+          <p class="section-number">06 / JOIN NOW</p>
           <h2 id="join-title">블록 하나부터<br />같이 시작해요.</h2>
           <p>아래 버튼을 누르면 접속 주소가 바로 복사됩니다.</p>
         </div>
@@ -518,5 +596,6 @@
     <div class="toast" id="toast" role="status" aria-live="polite">복사했습니다!</div>
   </body>
 </html>
+
 
 
