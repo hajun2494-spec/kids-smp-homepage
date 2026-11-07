@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#284534">
+  <meta name="description" content="같이, 천천히, 오래오래. EVERGREEN SMP의 세계와 지금 함께하는 플레이어를 만나요.">
+  <meta name="robots" content="noindex">
+  <title>EVERGREEN SMP · LIVE</title>
+  <link rel="icon" href="evergreen-server-icon-64.png">
+  <link rel="preload" href="tuktakpotato.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="broadcast.css">
+  <script src="broadcast-config.js" defer></script>
+  <script src="broadcast-time.js" defer></script>
+  <script src="broadcast.js" defer></script>
+</head>
+<body>
+  <audio id="background-music" src="EVERDAWN-full-song.mp3" autoplay loop preload="auto"></audio>
+  <div class="broadcast-shell" id="broadcast-shell">
+    <header class="masthead">
+      <a class="brand homepage-link" href="/" aria-label="EVERGREEN SMP 홈페이지">
+        <img src="evergreen-server-icon-64.png" width="64" height="64" alt="">
+        <span class="brand-wordmark">EVERGREEN <span>SMP</span><small>같이, 천천히, 오래오래.</small></span>
+      </a>
+      <div class="masthead-right">
+        <div class="server-pill" id="server-pill" data-state="unknown">
+          <span class="status-dot" aria-hidden="true"></span>
+          <strong id="server-state">연결 확인 중</strong>
+          <span class="pill-divider"></span>
+          <span>접속 <b id="header-count">—</b><span class="people-unit">명</span></span>
+        </div>
+        <div class="seoul-time"><span>SEOUL · KST</span><time id="seoul-clock">00:00:00</time></div>
+      </div>
+    </header>
+
+    <main class="stage" id="stage">
+      <section class="scene is-active map-scene" id="scene-map" data-scene="map" aria-labelledby="map-title">
+        <div class="scene-heading">
+          <div><p class="eyebrow"><span>01</span> OUR GROWING WORLD</p><h1 id="map-title">오늘도, 자라는 세계.</h1></div>
+          <p class="heading-caption">작은 발자국이 모여<br>우리만의 풍경이 돼요.</p>
+        </div>
+        <div class="map-frame" id="map-frame">
+          <canvas id="broadcast-map" role="img" aria-label="공개된 서버 지형과 마을 영역, 16×16블록 단위 플레이어 위치"></canvas>
+          <div class="map-vignette"></div>
+          <div class="map-topline">
+            <div class="map-label"><span class="tiny-cross" aria-hidden="true">✦</span><span>EVERGREEN ATLAS</span><span class="map-data-state" id="map-data-state" data-state="pending">지도 연결 중</span></div>
+            <label class="world-select"><span class="sr-only">표시할 차원</span><select id="map-world"><option value="overworld">오버월드</option></select></label>
+          </div>
+          <div class="map-message" id="map-message"><span class="map-message-symbol" aria-hidden="true">✦</span><h2 id="map-message-title">세계의 풍경을 불러오는 중</h2><p id="map-message-text">공개된 지도 정보가 도착하면 자동으로 나타나요.</p></div>
+          <div class="map-bottomline">
+            <div class="map-focus"><span class="eyebrow">NOW EXPLORING</span><strong id="map-focus-name">오버월드</strong><span id="map-detail">마을과 지형을 기다리고 있어요</span></div>
+            <div class="map-legend"><span><i class="legend-town"></i>마을 영역</span><span><i class="legend-player"></i>플레이어 · 16×16블록</span><small id="map-updated">저장된 지형을 표시해요</small></div>
+          </div>
+          <div class="map-compass" aria-hidden="true"><span>N</span><span>↑</span></div>
+        </div>
+        <div class="map-caption"><span id="map-freshness">지형은 월드 저장 후 반영돼요.</span><span id="position-freshness">위치 정보를 확인 중이에요.</span></div>
+      </section>
+
+      <section class="scene players-scene" id="scene-players" data-scene="players" aria-labelledby="players-title" hidden>
+        <div class="players-intro">
+          <p class="eyebrow"><span>02</span> TOGETHER, RIGHT NOW</p>
+          <h1 id="players-title">지금, 이곳에<br>함께 있어요.</h1>
+          <div class="player-count-display"><strong id="player-count">—</strong><span>명<span class="count-label">PLAYERS ONLINE</span></span></div>
+          <p id="players-message">서버의 접속 정보를 확인하고 있어요.</p>
+          <div class="player-refresh-note"><span class="small-dot"></span><span id="players-updated">약 5초마다 접속 정보를 확인해요</span></div>
+        </div>
+        <div class="roster-panel">
+          <div class="roster-topline"><span>오늘의 이웃들</span><span id="roster-pagination">EVERGREEN COMMUNITY</span></div>
+          <ul class="player-grid" id="player-grid" aria-label="현재 접속한 플레이어"></ul>
+          <div class="roster-empty" id="roster-empty"><img src="evergreen-server-icon-64.png" width="96" height="96" alt=""><h2 id="roster-empty-title">새로운 발자국을 기다려요.</h2><p id="roster-empty-text">잠시 후 접속 정보가 여기에 나타나요.</p></div>
+          <p class="roster-bottomline">각자의 모험이 만나, 우리의 이야기가 됩니다.</p>
+        </div>
+      </section>
+
+      <section class="scene video-scene" id="scene-video" data-scene="video" aria-labelledby="video-title" hidden>
+        <div class="video-intro">
+          <p class="eyebrow"><span>03</span> A LITTLE INVITATION</p>
+          <h1 id="video-title">한 편의 영상,<br>하나의 초대.</h1>
+          <p>에버그린에서 시작될<br>당신의 다음 이야기를 만나보세요.</p>
+          <div class="video-actions">
+            <button id="sound-toggle" type="button" aria-pressed="false"><span aria-hidden="true">♪</span> 소리 켜기</button>
+            <a id="youtube-link" href="https://www.youtube.com/watch?v=SWIzyoQxBkM" target="_blank" rel="noopener noreferrer">YouTube에서 보기 ↗</a>
+          </div>
+          <small class="video-sound-note" id="sound-note">처음에는 소리 없이 재생돼요.</small>
+        </div>
+        <div class="video-panel">
+          <div class="video-topline"><span>EVERGREEN SMP</span><span>OFFICIAL FILM</span></div>
+          <div class="video-frame" id="video-frame">
+            <div class="video-poster" id="video-poster"><img src="evergreen-smp-logo.jpg" alt="EVERGREEN SMP 서버 풍경"><span>잠시 후 영상이 시작돼요.</span></div>
+            <iframe id="promo-video" title="EVERGREEN SMP 공식 홍보 영상" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            <button class="video-play" id="video-play" type="button" hidden><span aria-hidden="true">▶</span> 영상 재생</button>
+          </div>
+          <p class="video-bottomline"><span>같이, 천천히, 오래오래.</span><span id="video-state">재생을 준비하고 있어요</span></p>
+        </div>
+      </section>
+
+      <section class="scene uptime-scene" id="scene-uptime" data-scene="uptime" aria-labelledby="uptime-title" hidden>
+        <div class="scene-heading"><div><p class="eyebrow"><span>04</span> OUR STORY, STILL GROWING</p><h1 id="uptime-title">첫 가동 후 함께한 시간</h1></div><p class="heading-caption">하루하루 쌓이는,<br>우리의 에버그린.</p></div>
+        <div class="time-card">
+          <div class="time-card-top"><span class="since-label" id="since-label">SINCE 2026.10.10</span><span class="growing-mark"><i></i> STILL GROWING</span></div>
+          <div class="elapsed-grid" aria-label="첫 정상 기동 이후 흐른 시간">
+            <div><strong id="elapsed-months">00</strong><span>개월<small>MONTHS</small></span></div>
+            <div><strong id="elapsed-days">00</strong><span>일<small>DAYS</small></span></div>
+            <div><strong id="elapsed-hours">00</strong><span>시간<small>HOURS</small></span></div>
+            <div><strong id="elapsed-minutes">00</strong><span>분<small>MINUTES</small></span></div>
+            <div><strong id="elapsed-seconds">00</strong><span>초<small>SECONDS</small></span></div>
+          </div>
+          <div class="time-card-bottom"><p>첫 정상 기동 기록부터 흐른 시간이에요.</p><span id="opened-at">2026.10.10 · 07:42:55 KST</span></div>
+          <div class="time-leaf" aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
+        <div class="time-notes"><p><span class="small-dot"></span>운영시간 매일 <strong>07:00–23:00</strong><span class="time-zone-note">한국 시간</span></p><span>당신과 함께, 오래도록 초록빛으로.</span></div>
+      </section>
+    </main>
+
+    <div class="broadcast-navigation">
+      <nav class="scene-tabs" aria-label="방송 장면">
+        <button type="button" class="scene-tab is-active" data-go="map" aria-current="true"><span>01</span>서버 지도<i></i></button>
+        <button type="button" class="scene-tab" data-go="players"><span>02</span>접속 플레이어<i></i></button>
+        <button type="button" class="scene-tab" data-go="video"><span>03</span>에버그린 필름<i></i></button>
+        <button type="button" class="scene-tab" data-go="uptime"><span>04</span>함께한 시간<i></i></button>
+      </nav>
+      <div class="rotation-label"><span class="small-dot" id="rotation-dot"></span><span id="rotation-label">자동 순환</span><span id="scene-countdown">24s</span></div>
+      <div class="broadcast-controls" aria-label="방송 제어">
+        <button type="button" id="previous-scene" aria-label="이전 장면" title="이전 장면 (←)">←</button>
+        <button type="button" id="pause-toggle" aria-label="자동 순환 일시 정지" aria-pressed="false" title="일시 정지 (Space)">Ⅱ</button>
+        <button type="button" id="next-scene" aria-label="다음 장면" title="다음 장면 (→)">→</button>
+        <span class="control-divider"></span>
+        <button type="button" id="fullscreen-toggle" aria-label="전체 화면" title="전체 화면 (F)">⛶</button>
+      </div>
+    </div>
+    <footer class="broadcast-footer"><span>EVERGREEN SMP <i>·</i> 같이, 천천히, 오래오래.</span><a class="homepage-link" id="homepage-address" href="/">EVERGREEN SMP 홈페이지 ↗</a><span id="status-updated">서버 정보 확인 중</span></footer>
+    <p class="sr-only" id="broadcast-announcement" aria-live="polite"></p>
+  </div>
+  <noscript><div class="noscript-message">실시간 지도와 자동 방송을 보려면 브라우저의 JavaScript를 켜 주세요.</div></noscript>
+</body>
+</html>
