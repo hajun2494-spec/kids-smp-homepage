@@ -1,12 +1,12 @@
 @font-face {
-  font-family: "TuktakPotato";
-  src: url("tuktakpotato.ttf") format("truetype");
+  font-family: "EvergreenSproutPixel";
+  src: url("evergreen-sprout-pixel.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 :root {
-  --font-cozy: "TuktakPotato", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
+  --font-cozy: "EvergreenSproutPixel", "Malgun Gothic", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
   --bg: #fff9ec;
   --surface: #fffdf6;
   --surface-2: #e4edda;

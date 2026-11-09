@@ -332,7 +332,7 @@
       ctx.fillStyle = color + "20"; ctx.fillRect(pos.x, pos.y, width, height); ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.setLineDash([7, 4]); ctx.strokeRect(pos.x, pos.y, width, height); ctx.setLineDash([]);
       const x = pos.x + width / 2, y = pos.y + height / 2;
       if (x > -100 && x < w + 100 && y > -30 && y < h + 30) {
-        ctx.font = "18px TuktakPotato, 'Malgun Gothic', sans-serif"; const textWidth = ctx.measureText(town.name).width;
+        ctx.font = "18px EvergreenSproutPixel, 'Malgun Gothic', sans-serif"; const textWidth = ctx.measureText(town.name).width;
         ctx.fillStyle = "#1a3326ef"; ctx.fillRect(x - textWidth / 2 - 12, y - 18, textWidth + 24, 34);
         ctx.fillStyle = color; ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillText(town.name, x, y); ctx.textBaseline = "alphabetic";
       }
@@ -343,7 +343,7 @@
       const pos = point(player.chunkX * 16, player.chunkZ * 16), size = 16 * view.scale;
       if (pos.x > w || pos.y > h || pos.x + size < 0 || pos.y + size < 0) continue;
       ctx.fillStyle = "#f5ce8750"; ctx.fillRect(pos.x, pos.y, size, size); ctx.strokeStyle = "#ffdc9c"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.strokeRect(pos.x, pos.y, Math.max(size, 1), Math.max(size, 1)); ctx.setLineDash([]);
-      const x = pos.x + size / 2; ctx.font = "12px TuktakPotato, 'Malgun Gothic', sans-serif"; ctx.textAlign = "center";
+      const x = pos.x + size / 2; ctx.font = "12px EvergreenSproutPixel, 'Malgun Gothic', sans-serif"; ctx.textAlign = "center";
       const text = `${player.name} · 청크`, textWidth = ctx.measureText(text).width;
       ctx.fillStyle = "#193123ed"; ctx.fillRect(x - textWidth / 2 - 7, pos.y - 25, textWidth + 14, 20); ctx.fillStyle = "#ffdda6"; ctx.fillText(text, x, pos.y - 11);
     }

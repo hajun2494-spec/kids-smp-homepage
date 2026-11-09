@@ -1,4 +1,4 @@
-/* TuktakPotato: a quiet little field notebook for EVERGREEN. */
+/* EvergreenSproutPixel: a quiet little field notebook for EVERGREEN. */
 :root {
   --bg: #fff9ec;
   --surface: #fffdf5;
@@ -19,7 +19,7 @@ html { scroll-padding-top: 110px; }
 body {
   color: var(--ink);
   background: radial-gradient(circle, #60765317 .8px, transparent .9px) 0 0 / 20px 20px, var(--bg);
-  font-family: "TuktakPotato", "Malgun Gothic", sans-serif;
+  font-family: "EvergreenSproutPixel", "Malgun Gothic", sans-serif;
   font-size: 18px;
   font-weight: 400;
   font-synthesis: none;
@@ -30,13 +30,13 @@ body::before { display: none; }
 button, input, select, textarea { font: inherit; }
 h1, h2, h3, strong, b, button, .hours-time, .rules-list li > span,
 .claim-guide code, .social-guide code, .presence-players li {
-  font-family: "TuktakPotato", "Malgun Gothic", sans-serif;
+  font-family: "EvergreenSproutPixel", "Malgun Gothic", sans-serif;
   font-weight: 400;
 }
 h1, h2, h3 { color: var(--ink); letter-spacing: -.025em; }
 h1, h2 { line-height: 1.25; }
 p { word-break: keep-all; }
-code { font-family: "TuktakPotato", "Malgun Gothic", monospace; overflow-wrap: anywhere; }
+code { font-family: "EvergreenSproutPixel", "Malgun Gothic", monospace; overflow-wrap: anywhere; }
 ::selection { color: var(--ink); background: #dbe8c5; }
 a:focus-visible, button:focus-visible, select:focus-visible {
   outline: 3px solid #a36f4d;
@@ -130,7 +130,7 @@ h1 em { color: #6e8555; font-style: normal; }
 }
 .promo-video { scroll-margin-top: 110px; }
 .promo-video-heading { align-items: center; gap: 22px; margin-bottom: 26px; }
-.promo-video h2 { color: var(--ink); font-family: "TuktakPotato", sans-serif; font-size: clamp(29px, 3vw, 39px); line-height: 1.3; }
+.promo-video h2 { color: var(--ink); font-family: "EvergreenSproutPixel", sans-serif; font-size: clamp(29px, 3vw, 39px); line-height: 1.3; }
 .promo-video-description { color: var(--muted); font-size: 17px; }
 .promo-video-link {
   padding: 10px 17px; color: #476b51; background: var(--paper);
@@ -199,7 +199,7 @@ h1 em { color: #6e8555; font-style: normal; }
 .hours-kicker { align-self: center; color: #687b50; font-size: 12px; font-weight: 400; letter-spacing: .13em; }
 .hours-time { color: #35573b; font-size: clamp(42px, 4.8vw, 67px); line-height: 1.1; }
 .hours-time span { color: #92a27b; }
-.hours-copy h2 { margin-bottom: 13px; font-family: "TuktakPotato", sans-serif; font-size: 25px; line-height: 1.45; }
+.hours-copy h2 { margin-bottom: 13px; font-family: "EvergreenSproutPixel", sans-serif; font-size: 25px; line-height: 1.45; }
 .hours-copy p { color: #586a4b; font-size: 16px; font-weight: 400; }
 
 .rules-list { border: 0; }
@@ -248,7 +248,7 @@ h1 em { color: #6e8555; font-style: normal; }
 .join-heading > p:last-child { color: #657362; font-size: 19px; }
 .join-cards { gap: 22px; }
 .join-card { padding: clamp(28px, 3.3vw, 42px); border: 1px solid #c9d5b9; border-radius: 28px; background: #fffdf5; box-shadow: var(--soft-shadow); }
-.join-card::before { top: -5px; right: 17px; color: #dfe8d487; font-family: "TuktakPotato", sans-serif; font-size: 140px; }
+.join-card::before { top: -5px; right: 17px; color: #dfe8d487; font-family: "EvergreenSproutPixel", sans-serif; font-size: 140px; }
 .join-card h3 { position: relative; margin: 11px 0 25px; font-size: 31px; line-height: 1.35; }
 .join-card dl { position: relative; margin: 0 0 26px; }
 .join-card dl div { gap: 20px; padding: 12px 0; border-color: #d8dfcd; font-size: 18px; }
