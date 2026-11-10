@@ -21,7 +21,7 @@
     const players = raw.players.map((player) => {
       if (!onlyKeys(player, ["name", "world", "chunkX", "chunkZ"]) || !label(player.name, 64) || names.has(player.name.toLowerCase())
         || !Object.hasOwn(WORLD_LABELS, player.world) || !integer(player.chunkX, 1875000) || !integer(player.chunkZ, 1875000))
-        throw new Error("정확하지 않은 청크 위치예요.");
+        throw new Error("잘못된 위치 정보예요.");
       names.add(player.name.toLowerCase());
       return { name: player.name, world: player.world, chunkX: player.chunkX, chunkZ: player.chunkZ };
     });
@@ -243,7 +243,7 @@
       const centre = worldToView(bounds.minX + 8, bounds.minZ + 8, view);
       ctx.beginPath(); ctx.arc(centre.x, centre.y, 4, 0, Math.PI * 2); ctx.fillStyle = "#ffc761"; ctx.fill();
       ctx.font = "bold 11px 'Malgun Gothic', sans-serif"; ctx.textAlign = "center";
-      const text = `${player.name} · 1청크`, width = ctx.measureText(text).width;
+      const text = player.name, width = ctx.measureText(text).width;
       ctx.fillStyle = "#06110ef2"; ctx.fillRect(centre.x - width / 2 - 6, pos.y - 24, width + 12, 19);
       ctx.fillStyle = "#ffe0a3"; ctx.fillText(text, centre.x, pos.y - 10);
     }
@@ -299,7 +299,7 @@
     $("map-status").dataset.state = mode;
     $("map-status").textContent = mode === "live" ? "정보 갱신 중" : mode === "pending" ? "전송 대기" : "이전 정보 표시";
     $("map-updated").textContent = state.failed ? "연결이 잠시 끊겼어요. 마지막 지도를 유지하고 있어요." : `마을 정보 ${timeText(state.data.updatedAt)} · 서울`;
-    $("terrain-updated").textContent = `지형 저장 반영 ${timeText(state.data.terrainUpdatedAt)} · 지형·마을은 약 5초마다 확인 · 새 청크와 건축물은 월드 저장 후 자동 반영돼요.`;
+    $("terrain-updated").textContent = `지형 저장 반영 ${timeText(state.data.terrainUpdatedAt)} · 지형·마을은 약 5초마다 확인 · 새로 탐험한 지형과 건축물은 월드 저장 후 자동 반영돼요.`;
   }
 
   function renderSnapshot(next) {
@@ -333,16 +333,16 @@
     const list = $("map-player-list"), players = livePlayers();
     const key = JSON.stringify(players) + state.world;
     $("map-player-count").textContent = String(players.length);
-    $("map-player-status").textContent = state.playersFailed ? "위치 연결이 끊겨 표시를 숨겼어요." : state.playerFeed?.state === "live" && players.length ? "약 5초마다 갱신 · 16×16블록 단위" : state.playerFeed?.state === "live" ? "표시할 접속자가 없어요." : "실시간 위치 전송을 기다리고 있어요.";
+    $("map-player-status").textContent = state.playersFailed ? "위치 연결이 끊겨 표시를 숨겼어요." : state.playerFeed?.state === "live" && players.length ? "약 5초마다 갱신" : state.playerFeed?.state === "live" ? "표시할 접속자가 없어요." : "실시간 위치 전송을 기다리고 있어요.";
     if (list.dataset.signature === key) return;
     const focusedName = list.contains(document.activeElement) ? document.activeElement.dataset.playerName : null;
     list.dataset.signature = key; list.replaceChildren();
     for (const player of players) {
       const item = document.createElement("li"), button = document.createElement("button"), strong = document.createElement("strong"), small = document.createElement("small");
       button.type = "button"; button.dataset.playerName = player.name;
-      strong.textContent = player.name; small.textContent = `${WORLD_LABELS[player.world]} · 청크 ${player.chunkX}, ${player.chunkZ}`;
+      strong.textContent = player.name; small.textContent = WORLD_LABELS[player.world];
       button.append(strong, small); item.append(button); list.append(item);
-      button.addEventListener("click", () => { state.world = player.world; state.selectedTown = ""; clearPin(); renderWorldSelector(); renderTownList(); fit(chunkBounds(player)); announce(`${player.name}의 대략적인 위치. 청크 X ${player.chunkX}, Z ${player.chunkZ}. 정확한 좌표와 높이는 공개하지 않아요.`); });
+      button.addEventListener("click", () => { state.world = player.world; state.selectedTown = ""; clearPin(); renderWorldSelector(); renderTownList(); fit(chunkBounds(player)); announce(`${player.name}의 대략적인 위치예요.`); });
       if (focusedName === player.name) button.focus({ preventScroll: true });
     }
   }

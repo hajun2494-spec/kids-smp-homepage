@@ -274,7 +274,7 @@
     const badge = $("map-data-state"); badge.dataset.state = status;
     badge.textContent = { live: "지도 갱신 중", stale: "저장된 지도", pending: "지도 연결 중", error: state.map ? "지도 갱신 대기" : "지도 연결 대기" }[status];
     $("map-freshness").textContent = status === "live" ? "마을 정보 갱신 중 · 지형은 월드 저장 후 반영돼요." : state.map ? "최근 저장된 지도를 표시해요 · 새 지도 정보를 기다리고 있어요." : "지도 연결을 기다리고 있어요 · 잠시 후 자동으로 다시 확인해요.";
-    $("position-freshness").textContent = feedFresh ? "플레이어는 16×16블록 단위로만 표시해요." : "새 위치 정보가 없어 플레이어 표시는 잠시 쉬어요.";
+    $("position-freshness").textContent = feedFresh ? "접속자의 대략적인 위치를 표시해요." : "새 위치 정보가 없어 플레이어 표시는 잠시 쉬어요.";
     const time = state.map?.terrainUpdatedAt;
     $("map-updated").textContent = tileFailures ? "일부 지형 연결 대기 · 자동 재시도 중" : time ? `지형 저장 ${seoulDate.format(new Date(time)).replaceAll("-", ".")} ${seoulClock.format(new Date(time))} KST` : "저장된 지형을 표시해요";
     const world = currentWorld(), hasContent = world && (world.tiles.length || currentTowns().length);
@@ -344,7 +344,7 @@
       if (pos.x > w || pos.y > h || pos.x + size < 0 || pos.y + size < 0) continue;
       ctx.fillStyle = "#f5ce8750"; ctx.fillRect(pos.x, pos.y, size, size); ctx.strokeStyle = "#ffdc9c"; ctx.lineWidth = 1.5; ctx.setLineDash([4, 3]); ctx.strokeRect(pos.x, pos.y, Math.max(size, 1), Math.max(size, 1)); ctx.setLineDash([]);
       const x = pos.x + size / 2; ctx.font = "12px EvergreenSproutPixel, 'Malgun Gothic', sans-serif"; ctx.textAlign = "center";
-      const text = `${player.name} · 청크`, textWidth = ctx.measureText(text).width;
+      const text = player.name, textWidth = ctx.measureText(text).width;
       ctx.fillStyle = "#193123ed"; ctx.fillRect(x - textWidth / 2 - 7, pos.y - 25, textWidth + 14, 20); ctx.fillStyle = "#ffdda6"; ctx.fillText(text, x, pos.y - 11);
     }
   }
