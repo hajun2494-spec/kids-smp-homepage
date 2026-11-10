@@ -349,7 +349,7 @@
     }
   }
 
-  const videoId = /^[a-zA-Z0-9_-]{11}$/.test(cfg.promoVideoId) ? cfg.promoVideoId : "SWIzyoQxBkM";
+  const videoId = /^[a-zA-Z0-9_-]{11}$/.test(cfg.promoVideoId) ? cfg.promoVideoId : "lXbNSJk0mlc";
   const iframe = $("promo-video"), youtubeOrigin = "https://www.youtube.com";
   $("youtube-link").href = `${youtubeOrigin}/watch?v=${videoId}`;
   function videoCommand(func, args = []) { if (func === "unMute") func = "mute"; if (state.videoLoaded) iframe.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args, id: "evergreen-promo" }), youtubeOrigin); }

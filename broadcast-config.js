@@ -1,7 +1,7 @@
 window.EVERGREEN_BROADCAST = Object.freeze({
   apiOrigin: "https://evergreen-smp-presence.chloekang.chatgpt.site",
   homepage: "https://hajun2494-spec.github.io/kids-smp-homepage/",
-  promoVideoId: "SWIzyoQxBkM",
+  promoVideoId: "lXbNSJk0mlc",
   musicSrc: "EVERDAWN-full-song.mp3",
   musicVolume: 0.38,
   openedAt: "2026-10-10T07:42:55+09:00",
