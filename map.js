@@ -115,6 +115,11 @@
   if (!canvas) return;
   const ctx = canvas.getContext("2d", { alpha: false });
   if (!ctx) { $("map-empty-title").textContent = "이 브라우저에서는 지도를 그릴 수 없어요."; return; }
+  const mapFont = '"EvergreenSproutPixel", "Malgun Gothic", sans-serif';
+  const fallbackFace = new Image();
+  fallbackFace.onload = requestDraw;
+  fallbackFace.src = "player-avatar-fallback.svg";
+  const playerFaces = new Map();
   let endpoint;
   try { endpoint = mapEndpoint(window.EVERGREEN_PRESENCE?.endpoint || "https://evergreen-smp-presence.chloekang.chatgpt.site/api/status"); }
   catch (error) { $("map-empty-title").textContent = error.message; return; }
@@ -133,6 +138,23 @@
 
   function requestDraw() {
     if (!state.renderQueued) { state.renderQueued = true; requestAnimationFrame(() => { state.renderQueued = false; draw(); }); }
+  }
+
+  function playerFace(name) {
+    if (!playerFaces.has(name)) {
+      const image = new Image(28, 28);
+      image.className = "map-player-avatar";
+      image.alt = "";
+      image.decoding = "async";
+      image.crossOrigin = "anonymous";
+      image.referrerPolicy = "no-referrer";
+      image.onload = requestDraw;
+      image.addEventListener("error", () => { image.src = fallbackFace.src; }, { once: true });
+      const skinName = name.startsWith(".") ? name.replaceAll("_", " ") : name;
+      image.src = `https://api.mcheads.org/head/${encodeURIComponent(skinName)}/32/hat`;
+      playerFaces.set(name, image);
+    }
+    return playerFaces.get(name);
   }
 
   function clampView() {
@@ -217,7 +239,7 @@
       const record = loadTile(tile); record.visible = true;
       if (record.state === "error") { badTiles++; if (Date.now() >= record.retryAt) record.state = "queued"; }
       if (record.image || record.fallbackImage) { ctx.imageSmoothingEnabled = false; ctx.drawImage(record.image || record.fallbackImage, pos.x, pos.y, size + 0.2, size + 0.2); }
-      else { ctx.fillStyle = "#12261c99"; ctx.fillRect(pos.x, pos.y, size, size); if (size > 150) { ctx.fillStyle = "#abc0b480"; ctx.font = "11px sans-serif"; ctx.textAlign = "center"; ctx.fillText(record.state === "error" ? "지형을 불러오지 못했어요" : "지형 불러오는 중", pos.x + size / 2, pos.y + size / 2); } }
+      else { ctx.fillStyle = "#12261c99"; ctx.fillRect(pos.x, pos.y, size, size); if (size > 150) { ctx.fillStyle = "#abc0b480"; ctx.font = `13px ${mapFont}`; ctx.textAlign = "center"; ctx.fillText(record.state === "error" ? "지형을 불러오지 못했어요" : "지형 불러오는 중", pos.x + size / 2, pos.y + size / 2); } }
     }
     pumpTiles();
     for (const town of currentTowns()) {
@@ -228,25 +250,12 @@
       ctx.strokeStyle = color; ctx.lineWidth = selected ? 3 : 1.5; ctx.setLineDash(selected ? [] : [6, 3]); ctx.strokeRect(pos.x, pos.y, width, height); ctx.setLineDash([]);
       const textX = pos.x + width / 2, textY = pos.y + height / 2;
       if (textX > -100 && textX < view.width + 100 && textY > -30 && textY < view.height + 30) {
-        ctx.font = "bold 12px 'Malgun Gothic', sans-serif"; const textWidth = ctx.measureText(town.name).width;
+        ctx.font = `14px ${mapFont}`; const textWidth = ctx.measureText(town.name).width;
         ctx.fillStyle = "#06110eea"; ctx.fillRect(textX - textWidth / 2 - 9, textY - 13, textWidth + 18, 25);
         ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = color; ctx.fillText(town.name, textX, textY); ctx.textBaseline = "alphabetic";
       }
     }
-    // A whole 16×16 area is highlighted; its centre is a schematic marker, not
-    // the person's precise position. Never interpolate or retain old movement.
-    for (const player of livePlayers().filter((entry) => entry.world === state.world)) {
-      const bounds = chunkBounds(player), pos = worldToView(bounds.minX, bounds.minZ, view), size = 16 * view.scale;
-      if (pos.x > view.width || pos.y > view.height || pos.x + size < 0 || pos.y + size < 0) continue;
-      ctx.fillStyle = "#ffc76155"; ctx.fillRect(pos.x, pos.y, size, size);
-      ctx.strokeStyle = "#ffc761"; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); ctx.strokeRect(pos.x, pos.y, Math.max(1, size), Math.max(1, size)); ctx.setLineDash([]);
-      const centre = worldToView(bounds.minX + 8, bounds.minZ + 8, view);
-      ctx.beginPath(); ctx.arc(centre.x, centre.y, 4, 0, Math.PI * 2); ctx.fillStyle = "#ffc761"; ctx.fill();
-      ctx.font = "bold 11px 'Malgun Gothic', sans-serif"; ctx.textAlign = "center";
-      const text = player.name, width = ctx.measureText(text).width;
-      ctx.fillStyle = "#06110ef2"; ctx.fillRect(centre.x - width / 2 - 6, pos.y - 24, width + 12, 19);
-      ctx.fillStyle = "#ffe0a3"; ctx.fillText(text, centre.x, pos.y - 10);
-    }
+    drawPlayerChunks(view);
     if (state.pin) {
       const pos = worldToView(state.pin.x + 0.5, state.pin.z + 0.5, view);
       ctx.lineWidth = 2; ctx.strokeStyle = "#f5f0df"; ctx.fillStyle = "#173f2c"; ctx.beginPath(); ctx.arc(pos.x, pos.y, 6, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
@@ -258,6 +267,53 @@
       if (!hasAnything) { $("map-empty-title").textContent = "아직 공개된 지도 영역이 없어요"; $("map-empty-text").textContent = "저장된 지형 또는 마을 정보가 도착하면 여기에 표시돼요."; }
       if (badTiles && badTiles === visibleTiles) $("terrain-updated").textContent = "지형 이미지를 불러오지 못했어요. 마을 영역과 좌표는 계속 확인할 수 있고, 잠시 후 자동으로 다시 불러와요.";
     }
+  }
+
+  function drawPlayerChunks(view) {
+    // Mark the entire chunk and anchor the badge to its approximate centre.
+    const chunks = new Map();
+    for (const player of livePlayers()) {
+      if (player.world !== state.world) continue;
+      const key = `${player.chunkX}:${player.chunkZ}`;
+      if (!chunks.has(key)) chunks.set(key, []);
+      chunks.get(key).push(player);
+    }
+    const visible = [];
+    for (const players of chunks.values()) {
+      const player = players[0];
+      const bounds = chunkBounds(player), pos = worldToView(bounds.minX, bounds.minZ, view), size = 16 * view.scale;
+      if (pos.x > view.width || pos.y > view.height || pos.x + size < 0 || pos.y + size < 0) continue;
+      ctx.fillStyle = "#ffc76155"; ctx.fillRect(pos.x, pos.y, size, size);
+      ctx.strokeStyle = "#ffc761"; ctx.lineWidth = 2; ctx.setLineDash([4, 3]); ctx.strokeRect(pos.x, pos.y, Math.max(1, size), Math.max(1, size)); ctx.setLineDash([]);
+      visible.push({ players, centre: worldToView(bounds.minX + 8, bounds.minZ + 8, view) });
+    }
+    if (view.width < 56) return;
+    ctx.save();
+    ctx.font = `14px ${mapFont}`;
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.imageSmoothingEnabled = false;
+    for (const { players, centre } of visible) {
+      const rowHeight = 28, padding = 6, faceSize = 22, textOffset = 35;
+      const nameWidth = Math.max(...players.map(({ name }) => ctx.measureText(name).width));
+      const width = Math.min(view.width - 8, Math.ceil(nameWidth) + textOffset + padding);
+      const height = rowHeight * players.length + padding;
+      const left = clamp(Math.round(centre.x - width / 2), 4, view.width - width - 4);
+      const above = centre.y - height - 7;
+      const top = Math.round(above >= 4 ? above : clamp(centre.y + 7, 4, Math.max(4, view.height - height - 4)));
+      ctx.beginPath(); ctx.arc(centre.x, centre.y, 3, 0, Math.PI * 2); ctx.fillStyle = "#ffc761"; ctx.fill();
+      ctx.beginPath(); ctx.roundRect(left, top, width, height, 6);
+      ctx.fillStyle = "#06110ef2"; ctx.fill();
+      ctx.strokeStyle = "#ffc761"; ctx.lineWidth = 1; ctx.stroke();
+      for (const [index, { name }] of players.entries()) {
+        const rowY = top + padding / 2 + index * rowHeight;
+        const image = playerFace(name);
+        const face = image.naturalWidth ? image : fallbackFace;
+        if (face.naturalWidth) ctx.drawImage(face, left + padding, rowY + 3, faceSize, faceSize);
+        ctx.fillStyle = "#ffe0a3"; ctx.fillText(name, left + textOffset, rowY + rowHeight / 2, width - textOffset - padding);
+      }
+    }
+    ctx.restore();
   }
 
   function renderTownDetails() {
@@ -331,6 +387,8 @@
 
   function renderPlayerList() {
     const list = $("map-player-list"), players = livePlayers();
+    const activeNames = new Set(players.map(({ name }) => name));
+    for (const name of playerFaces.keys()) if (!activeNames.has(name)) playerFaces.delete(name);
     const key = JSON.stringify(players) + state.world;
     $("map-player-count").textContent = String(players.length);
     $("map-player-status").textContent = state.playersFailed ? "위치 연결이 끊겨 표시를 숨겼어요." : state.playerFeed?.state === "live" && players.length ? "약 5초마다 갱신" : state.playerFeed?.state === "live" ? "표시할 접속자가 없어요." : "실시간 위치 전송을 기다리고 있어요.";
@@ -338,10 +396,11 @@
     const focusedName = list.contains(document.activeElement) ? document.activeElement.dataset.playerName : null;
     list.dataset.signature = key; list.replaceChildren();
     for (const player of players) {
-      const item = document.createElement("li"), button = document.createElement("button"), strong = document.createElement("strong"), small = document.createElement("small");
+      const item = document.createElement("li"), button = document.createElement("button"), label = document.createElement("span"), strong = document.createElement("strong"), small = document.createElement("small");
       button.type = "button"; button.dataset.playerName = player.name;
       strong.textContent = player.name; small.textContent = WORLD_LABELS[player.world];
-      button.append(strong, small); item.append(button); list.append(item);
+      label.append(strong, small);
+      button.append(playerFace(player.name), label); item.append(button); list.append(item);
       button.addEventListener("click", () => { state.world = player.world; state.selectedTown = ""; clearPin(); renderWorldSelector(); renderTownList(); fit(chunkBounds(player)); announce(`${player.name}의 대략적인 위치예요.`); });
       if (focusedName === player.name) button.focus({ preventScroll: true });
     }
@@ -456,6 +515,7 @@
   new ResizeObserver(resize).observe($("map-viewport"));
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { fetchMap(); fetchPlayers(); } });
   resize(); fetchMap(); fetchPlayers();
+  document.fonts?.load('14px "EvergreenSproutPixel"').then(requestDraw, () => {});
   setInterval(() => { if (!document.hidden) { fetchMap(); fetchPlayers(); } renderStatus(); requestDraw(); }, 5000);
 }());
 
