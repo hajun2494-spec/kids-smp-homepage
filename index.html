@@ -242,6 +242,35 @@
         border-bottom: 1px solid var(--line);
       }
       .green-rates dd { flex: 0 0 auto; margin: 0; color: #3c6a48; }
+      .section-number.guide-kicker {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .guide-icon {
+        display: inline-grid;
+        flex: none;
+        place-items: center;
+        width: 43px;
+        height: 43px;
+        border: 1px solid #c4d2b4;
+        border-radius: 12px;
+        background: #edf2e3;
+      }
+      .guide-icon img, .menu-icon img {
+        display: block;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+      .main-nav .nav-green { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+      .nav-green img { display: block; image-rendering: pixelated; }
+      .guide-icon-large { width: 62px; height: 60px; border-radius: 16px; }
+      .guide-notes { position: relative; width: 92px; }
+      .guide-notes img { position: absolute; }
+      .guide-notes img:nth-child(1) { left: 7px; top: 16px; transform: rotate(-15deg); }
+      .guide-notes img:nth-child(2) { left: 25px; top: 5px; transform: rotate(-2deg); }
+      .guide-notes img:nth-child(3) { left: 42px; top: 16px; transform: rotate(14deg); }
+      .menu-icon img { width: 36px; height: 36px; }
       @media (max-width: 860px) {
         .green-guide .claim-steps { grid-template-columns: 1fr; }
       }
@@ -272,7 +301,7 @@
       <nav class="main-nav" aria-label="주 메뉴">
         <a href="map.html">마을 지도 ↗</a>
         <a href="#towns">마을 만들기</a>
-        <a href="#green">그린·환전</a>
+        <a class="nav-green" href="#green"><img src="evergreen-guide-green.png" width="20" height="20" alt="" decoding="async" />그린·환전</a>
         <a href="#vote">서버 추천</a>
         <a class="mini-cta" href="#join">접속하기</a>
       </nav>
@@ -372,7 +401,7 @@
 
       <section class="section intro" aria-labelledby="intro-title">
         <div class="section-heading">
-          <p class="section-number">01 / ABOUT</p>
+          <p class="section-number guide-kicker"><span class="guide-icon"><img src="evergreen-guide-grass.png" width="27" height="27" alt="" decoding="async" /></span>01 / ABOUT</p>
           <h2 id="intro-title">어린이도, 어른이도<br />편하게 즐기는 야생</h2>
         </div>
         <div class="intro-copy">
@@ -419,7 +448,7 @@
 
       <section class="section rules" aria-labelledby="rules-title">
         <div class="section-heading">
-          <p class="section-number">02 / RULES</p>
+          <p class="section-number guide-kicker"><span class="guide-icon"><img src="evergreen-guide-book.png" width="27" height="27" alt="" loading="lazy" decoding="async" /></span>02 / RULES</p>
           <h2 id="rules-title">딱 이것만<br />지켜주세요</h2>
         </div>
         <ol class="rules-list">
@@ -430,9 +459,9 @@
         </ol>
       </section>
 
-      <section class="claim-guide" aria-labelledby="claim-title">
+      <section class="claim-guide" id="claim" aria-labelledby="claim-title">
         <div class="claim-heading">
-          <p class="section-number">03 / LAND CLAIM</p>
+          <p class="section-number guide-kicker"><span class="guide-icon guide-icon-large"><img src="evergreen-guide-shovel.png" width="46" height="46" alt="" loading="lazy" decoding="async" /></span>03 / LAND CLAIM</p>
           <h2 id="claim-title">내 집과 상자는<br />직접 보호하세요.</h2>
           <p>황금 삽으로 두 모서리를 선택하면 간단하게 내 땅을 만들 수 있습니다.</p>
         </div>
@@ -466,7 +495,7 @@
 
       <section class="claim-guide town-guide" id="towns" aria-labelledby="town-title">
         <div class="claim-heading">
-          <p class="section-number">04 / YOUR TOWN</p>
+          <p class="section-number guide-kicker"><span class="guide-icon"><img src="evergreen-guide-bell.png" width="29" height="29" alt="" loading="lazy" decoding="async" /></span>04 / YOUR TOWN</p>
           <h2 id="town-title">내가 만든 터전을,<br />함께 사는 마을로.</h2>
           <p>내 보호구역을 마을로 등록하고 주민을 초대해 보세요. 아래 예시의 <strong>푸른마을</strong>은 원하는 마을 이름으로 바꾸면 됩니다.</p>
         </div>
@@ -516,8 +545,15 @@
 
       <section class="claim-guide green-guide" id="green" aria-labelledby="green-title">
         <div class="claim-heading">
-          <p class="section-number">그린 · 환전 안내</p>
-          <h2 id="green-title">우리 마을의<br />환전 주민</h2>
+          <p class="section-number guide-kicker">
+            <span class="guide-icon guide-icon-large guide-notes">
+              <img src="evergreen-guide-green.png" width="40" height="40" alt="" loading="lazy" decoding="async" />
+              <img src="evergreen-guide-green-5.png" width="40" height="40" alt="" loading="lazy" decoding="async" />
+              <img src="evergreen-guide-green-10.png" width="40" height="40" alt="" loading="lazy" decoding="async" />
+            </span>
+            그린 · 환전 안내
+          </p>
+          <h2 id="green-title">우리 마을에<br />환전소를 열어요</h2>
           <p>그린은 주민 거래에 쓰는 에버그린의 지폐예요. <strong>1그린은 에메랄드 1개</strong>와 같은 가치예요. 1·5·10그린권이 있고, 같은 금액의 지폐는 한 칸에 최대 64장까지 쌓여요.</p>
         </div>
 
@@ -567,7 +603,7 @@
 
       <section class="social-guide" id="friends" aria-labelledby="social-title">
         <div class="social-heading">
-          <p class="section-number">05 / MENU &amp; FRIENDS</p>
+          <p class="section-number guide-kicker"><span class="guide-icon"><img src="evergreen-guide-compass.png" width="27" height="27" alt="" loading="lazy" decoding="async" /></span>05 / MENU &amp; FRIENDS</p>
           <h2 id="social-title">명령어를 외우지 말고<br />메뉴로 시작하세요.</h2>
           <p>
             채팅창에 <code>/menu</code>를 입력하면 토지 보호용 삽 받기부터
@@ -577,7 +613,7 @@
 
         <div class="menu-showcase">
           <article class="menu-card featured">
-            <div class="menu-icon" aria-hidden="true">🪏</div>
+            <div class="menu-icon" aria-hidden="true"><img src="evergreen-guide-shovel.png" width="36" height="36" alt="" loading="lazy" decoding="async" /></div>
             <div>
               <span>START HERE</span>
               <h3><code>/menu</code> → 토지 보호 삽 받기</h3>
@@ -619,7 +655,7 @@
 
       <section class="join" id="join" aria-labelledby="join-title">
         <div class="join-heading">
-          <p class="section-number">06 / JOIN NOW</p>
+          <p class="section-number guide-kicker"><span class="guide-icon"><img src="evergreen-guide-door.png" width="27" height="27" alt="" loading="lazy" decoding="async" /></span>06 / JOIN NOW</p>
           <h2 id="join-title">블록 하나부터<br />같이 시작해요.</h2>
           <p>아래 버튼을 누르면 접속 주소가 바로 복사됩니다.</p>
         </div>
