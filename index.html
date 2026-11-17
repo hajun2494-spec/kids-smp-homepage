@@ -294,6 +294,59 @@
     </style>
     <link rel="stylesheet" href="cozy-base.css?v=20261110-sprout" />
     <link rel="stylesheet" href="cozy-theme.css?v=20261110-sprout" />
+    <style>
+      .hero-downloads { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+      .client-download-button {
+        display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+        min-height: 48px; padding: 12px 20px; border: 1px solid #355e42;
+        border-radius: 13px; color: var(--paper); background: var(--lime);
+        box-shadow: 0 4px 0 #264c3720; font: inherit; font-size: 17px;
+        line-height: 1.5; text-align: center; text-decoration: none; word-break: keep-all;
+      }
+      .client-download-button:hover { color: var(--paper); background: #294e36; }
+      .client-download-button.secondary { color: var(--ink); background: var(--paper); border-color: #acbf9b; }
+      .client-download-button.secondary:hover { background: var(--surface-2); }
+      .client-download-button:focus-visible { outline: 3px solid var(--gold); outline-offset: 5px; }
+      .hero-download-note { margin: 12px 0 0; color: var(--muted); font-size: 14px; }
+      .hero-download-note a, .client-downloads a:not(.client-download-button) {
+        color: var(--mint); text-decoration: underline; text-underline-offset: 4px;
+      }
+      .client-downloads {
+        max-width: 1440px; margin: auto; padding: 72px clamp(24px, 6vw, 88px);
+        border-top: 1px solid var(--line); scroll-margin-top: 140px;
+      }
+      .client-download-heading { max-width: 760px; margin-bottom: 30px; }
+      .client-download-heading h2 { margin: 0 0 18px; font-size: clamp(32px, 3.8vw, 49px); line-height: 1.3; }
+      .client-download-heading > p:last-child { margin: 0; color: var(--muted); font-size: 18px; }
+      .client-download-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+      .client-download-card {
+        display: flex; flex-direction: column; min-width: 0; padding: clamp(24px, 3vw, 36px);
+        border: 1px solid var(--line); border-radius: 25px; background: var(--paper); box-shadow: var(--soft-shadow);
+      }
+      .client-download-card.recommended { background: #edf3e5; border-color: #b7c9a5; }
+      .client-download-tag { align-self: flex-start; margin: 0 0 18px; padding: 4px 11px; border-radius: 9px; color: #526d42; background: #dce8cc; font-size: 13px; }
+      .client-download-card h3 { margin: 0 0 12px; font-size: 29px; line-height: 1.3; }
+      .client-download-card > p:not(.client-download-tag):not(.client-download-meta) { margin: 0; color: var(--muted); }
+      .client-download-card ol { margin: 22px 0 28px; padding-left: 24px; font-size: 16px; }
+      .client-download-card li + li { margin-top: 9px; }
+      .client-download-card code { overflow-wrap: anywhere; }
+      .client-download-card .client-download-button { width: 100%; box-sizing: border-box; margin-top: auto; }
+      .client-download-meta { margin: 12px 0 0; color: var(--muted); font-size: 13px; text-align: center; }
+      .client-download-note { margin-top: 24px; padding: 20px 24px; border: 1px solid var(--line); border-radius: 18px; background: #fffdf5b3; }
+      .client-download-note p { margin: 0; color: var(--muted); font-size: 16px; }
+      .client-download-note p + p { margin-top: 8px; }
+      .client-download-note strong { color: var(--ink); }
+      .client-download-note kbd { padding: 1px 7px; border: 1px solid #c3cfb5; border-bottom-width: 3px; border-radius: 6px; background: var(--paper); color: var(--ink); }
+      @media (max-width: 680px) {
+        .client-downloads { padding-top: 50px; padding-bottom: 50px; scroll-margin-top: 190px; }
+        .client-download-grid { grid-template-columns: 1fr; gap: 18px; }
+        .client-download-note { padding: 20px; }
+      }
+      @media (max-width: 460px) {
+        .hero-downloads { flex-direction: column; }
+        .hero-downloads .client-download-button { width: 100%; box-sizing: border-box; }
+      }
+    </style>
     <script src="script.js" defer></script>
     <script src="presence-config.js?v=20261016-live1" defer></script>
     <script src="presence.js?v=20261017-faces1" defer></script>
@@ -308,6 +361,7 @@
         <a href="map.html">마을 지도 ↗</a>
         <a href="#towns">마을 만들기</a>
         <a href="#green">그린·환전</a>
+        <a href="#downloads">다운로드</a>
         <a href="#vote">서버 추천</a>
         <a class="mini-cta" href="#join">접속하기</a>
       </nav>
@@ -335,6 +389,12 @@
               <span aria-hidden="true">⧉</span> 주소 복사
             </button>
           </div>
+
+          <div class="hero-downloads" aria-label="에버그린 전용 프로그램 다운로드">
+            <a class="client-download-button" href="Evergreen-Launcher-1.0.0.exe" download="Evergreen-Launcher-1.0.0.exe"><span aria-hidden="true">↓</span> 전용 런처 다운로드</a>
+            <a class="client-download-button secondary" href="evergreen-client-1.0.0+26.3.jar" download="evergreen-client-1.0.0+26.3.jar"><span aria-hidden="true">↓</span> 모드만 다운로드</a>
+          </div>
+          <p class="hero-download-note">Java 26.3 전용 · 런처는 Windows용 · <a href="#downloads">설치 방법 보기</a></p>
 
           <div class="hero-badges" aria-label="주요 특징">
             <span>⚔️ PVP OFF</span>
@@ -674,6 +734,48 @@
         </aside>
       </section>
 
+      <section class="client-downloads" id="downloads" aria-labelledby="downloads-title">
+        <div class="client-download-heading">
+          <p class="section-number">EVERGREEN CLIENT · 1.0.0</p>
+          <h2 id="downloads-title">에버그린을,<br />조금 더 편하게.</h2>
+          <p>전용 모드로 에버그린의 새 메뉴를 만나보세요. 런처가 모드와 전용 프로필을 함께 준비해 줘요.</p>
+        </div>
+
+        <div class="client-download-grid">
+          <article class="client-download-card recommended">
+            <p class="client-download-tag">WINDOWS · 처음이라면 추천</p>
+            <h3>전용 런처</h3>
+            <p>모드가 포함돼 있어 한 번만 받으면 돼요. 기존 마크와 별도 폴더에 에버그린 프로필을 준비해요.</p>
+            <ol>
+              <li>파일을 실행하고 <strong>준비하고 시작하기</strong>를 눌러요. 첫 설치 때는 공식 런처를 닫아 주세요.</li>
+              <li>열린 공식 Minecraft Launcher에서 Microsoft 계정으로 로그인해요.</li>
+              <li><strong>EVERGREEN SMP · 전용 → 플레이</strong>를 선택하면 서버에 연결돼요.</li>
+            </ol>
+            <a class="client-download-button" href="Evergreen-Launcher-1.0.0.exe" download="Evergreen-Launcher-1.0.0.exe"><span aria-hidden="true">↓</span> 전용 런처 다운로드</a>
+            <p class="client-download-meta">Windows · Java 26.3 · 전용 모드 포함<br /><a href="Evergreen-Launcher-1.0.0.zip" download="Evergreen-Launcher-1.0.0.zip">ZIP 파일로 받기</a></p>
+          </article>
+
+          <article class="client-download-card">
+            <p class="client-download-tag">FABRIC · 직접 설치</p>
+            <h3>전용 모드만</h3>
+            <p>이미 사용 중인 Fabric 프로필이 있다면 모드 파일 하나만 넣어 주세요.</p>
+            <ol>
+              <li><strong>Minecraft 26.3 / Fabric Loader 0.19.5 이상</strong> 프로필을 준비해요.</li>
+              <li>게임을 종료하고 받은 <code>.jar</code> 파일을 해당 프로필의 <code>mods</code> 폴더에 넣어요.</li>
+              <li>다시 실행해 에버그린에 접속하고 서버 리소스팩을 받아요. 필요한 Fabric API 모듈은 파일에 포함돼 있어요.</li>
+            </ol>
+            <a class="client-download-button secondary" href="evergreen-client-1.0.0+26.3.jar" download="evergreen-client-1.0.0+26.3.jar"><span aria-hidden="true">↓</span> 모드만 다운로드</a>
+            <p class="client-download-meta">Java 26.3 · Fabric 0.19.5 이상 · Java 25 이상</p>
+          </article>
+        </div>
+
+        <aside class="client-download-note">
+          <p><strong>메뉴는 <kbd>M</kbd> 또는 <code>/menu</code>로 열어요.</strong> 다른 모드와 단축키가 겹치면 게임의 키 설정에서 변경할 수 있어요.</p>
+          <p>전용 모드는 선택 사항이에요. 일반 Java 접속에서는 기존 회색 버튼 메뉴를, Bedrock에서는 기존 베드락 메뉴를 사용해요.</p>
+          <p>런처는 Minecraft Java Edition 정품 계정이 필요하며, 로그인은 공식 Minecraft Launcher에서 진행해요.</p>
+        </aside>
+      </section>
+
       <section class="join" id="join" aria-labelledby="join-title">
         <div class="join-heading">
           <p class="section-number">06 / JOIN NOW</p>
@@ -747,6 +849,7 @@
     <div class="toast" id="toast" role="status" aria-live="polite">복사했습니다!</div>
   </body>
 </html>
+
 
 
 
