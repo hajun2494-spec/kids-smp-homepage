@@ -349,10 +349,10 @@
     }
   }
 
-  const videoId = /^[a-zA-Z0-9_-]{11}$/.test(cfg.promoVideoId) ? cfg.promoVideoId : "LLBBFBi3uPo";
+  const videoId = /^[a-zA-Z0-9_-]{11}$/.test(cfg.promoVideoId) ? cfg.promoVideoId : "-doi98UecVk";
   const iframe = $("promo-video"), youtubeOrigin = "https://www.youtube.com";
   const nativeVideo = iframe.tagName === "VIDEO";
-  $("youtube-link").href = nativeVideo ? iframe.src : `${youtubeOrigin}/watch?v=${videoId}`;
+  $("youtube-link").href = `${youtubeOrigin}/watch?v=${videoId}`;
   if (nativeVideo) $("youtube-link").textContent = "영상 크게 보기 ↗";
   function videoCommand(func, args = []) {
     if (nativeVideo) {

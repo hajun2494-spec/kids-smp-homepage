@@ -1,7 +1,7 @@
 window.EVERGREEN_BROADCAST = Object.freeze({
   apiOrigin: "https://evergreen-smp-presence.chloekang.chatgpt.site",
   homepage: "https://hajun2494-spec.github.io/kids-smp-homepage/",
-  promoVideoId: "LLBBFBi3uPo",
+  promoVideoId: "-doi98UecVk",
   promoVideoSrc: "EVERGREEN-Glass-Horizon-1080p60.mp4?v=20261118-horizon1",
   musicSrc: "GLASS-HORIZON-full-song.mp3?v=20261118-horizon1",
   musicVolume: 0.35,
