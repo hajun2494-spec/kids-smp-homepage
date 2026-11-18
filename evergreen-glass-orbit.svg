@@ -1,20 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 600" fill="none">
   <defs>
     <linearGradient id="depth" x1="127" y1="130" x2="464" y2="395" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#247fab"/><stop offset=".24" stop-color="#84d4ed"/><stop offset=".44" stop-color="#ecffff"/><stop offset=".57" stop-color="#3d95bf"/><stop offset=".8" stop-color="#15877c"/><stop offset="1" stop-color="#8bd9ac"/>
+      <stop stop-color="#119ad9"/><stop offset=".24" stop-color="#55d8ff"/><stop offset=".44" stop-color="#f6ffff"/><stop offset=".57" stop-color="#19abe3"/><stop offset=".8" stop-color="#28c98c"/><stop offset="1" stop-color="#a0d632"/>
     </linearGradient>
     <linearGradient id="surface" x1="180" y1="125" x2="423" y2="366" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff" stop-opacity=".98"/><stop offset=".2" stop-color="#c4eafa"/><stop offset=".34" stop-color="#50acd5"/><stop offset=".5" stop-color="#effbff"/><stop offset=".65" stop-color="#fff"/><stop offset=".8" stop-color="#7bcabb"/><stop offset="1" stop-color="#aee5b8"/>
+      <stop stop-color="#fff" stop-opacity=".98"/><stop offset=".2" stop-color="#c4f0ff"/><stop offset=".34" stop-color="#1cbbf0"/><stop offset=".5" stop-color="#f3fcff"/><stop offset=".65" stop-color="#fff"/><stop offset=".8" stop-color="#28c98c"/><stop offset="1" stop-color="#b6e64b"/>
     </linearGradient>
-    <linearGradient id="inner" x1="265" y1="210" x2="376" y2="310" gradientUnits="userSpaceOnUse"><stop stop-color="#217da4"/><stop offset=".5" stop-color="#73cfd1"/><stop offset="1" stop-color="#d3f6e6"/></linearGradient>
-    <radialGradient id="orb" cx=".32" cy=".24" r=".8"><stop stop-color="#fff"/><stop offset=".2" stop-color="#ddf6ff"/><stop offset=".52" stop-color="#7bbfdd"/><stop offset=".8" stop-color="#268ba5"/><stop offset="1" stop-color="#6fccb0"/></radialGradient>
-    <radialGradient id="wash"><stop stop-color="#6cbedd" stop-opacity=".2"/><stop offset="1" stop-color="#c6eff6" stop-opacity="0"/></radialGradient>
+    <linearGradient id="inner" x1="265" y1="210" x2="376" y2="310" gradientUnits="userSpaceOnUse"><stop stop-color="#0ba4d4"/><stop offset=".5" stop-color="#41d7e4"/><stop offset="1" stop-color="#c1f280"/></linearGradient>
+    <radialGradient id="orb" cx=".32" cy=".24" r=".8"><stop stop-color="#fff"/><stop offset=".2" stop-color="#e2f9ff"/><stop offset=".52" stop-color="#4dc7f5"/><stop offset=".8" stop-color="#05b1d3"/><stop offset="1" stop-color="#43d899"/></radialGradient>
+    <radialGradient id="wash"><stop stop-color="#2ac8f2" stop-opacity=".2"/><stop offset="1" stop-color="#c6f4ff" stop-opacity="0"/></radialGradient>
   </defs>
   <ellipse cx="335" cy="353" rx="270" ry="225" fill="url(#wash)"/>
   <g stroke-width="1.1">
-    <ellipse cx="312" cy="293" rx="281" ry="125" transform="rotate(-35 312 293)" stroke="#78c9d4" stroke-opacity=".65"/>
+    <ellipse cx="312" cy="293" rx="281" ry="125" transform="rotate(-35 312 293)" stroke="#31c5e4" stroke-opacity=".65"/>
     <ellipse cx="312" cy="293" rx="220" ry="188" transform="rotate(27 312 293)" stroke="#fff" stroke-opacity=".95"/>
-    <ellipse cx="312" cy="293" rx="121" ry="275" transform="rotate(-30 312 293)" stroke="#83c9d8" stroke-opacity=".5"/>
+    <ellipse cx="312" cy="293" rx="121" ry="275" transform="rotate(-30 312 293)" stroke="#4cc9e8" stroke-opacity=".5"/>
   </g>
   <g transform="rotate(-28 312 270)">
     <path fill-rule="evenodd" d="M501 294a189 164 0 1 1-378 0 189 164 0 1 1 378 0Zm-92 0a97 83 0 1 0-194 0 97 83 0 1 0 194 0Z" fill="url(#depth)" opacity=".95"/>
