@@ -14,13 +14,13 @@
       content="새로운 문명을 시작하거나 함께할 문명에 합류하세요. 전쟁과 약탈 없이 편하게 탐험하고 건축하는 어린이·어른이 야생 서버."
     />
     <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://hajun2494-spec.github.io/kids-smp-homepage/evergreen-smp-logo.jpg?v=20261031-cozy" />
+    <meta property="og:image" content="https://hajun2494-spec.github.io/kids-smp-homepage/evergreen-smp-logo.jpg?v=20261118-brand7" />
     <meta property="og:image:alt" content="EVERGREEN SMP 로고 – 같이, 천천히, 오래오래" />
     <title>EVERGREEN SMP | Java + Bedrock 26.3</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="evergreen-favicon32.png?v=20261031-cozy" />
-    <link rel="icon" type="image/png" sizes="64x64" href="evergreen-server-icon-64.png?v=20261031-cozy" />
-    <link rel="shortcut icon" href="favicon.ico?v=20261031-cozy" />
-    <link rel="apple-touch-icon" href="evergreen-cozy-brand-square.png?v=20261031-cozy" />
+    <link rel="icon" type="image/png" sizes="32x32" href="evergreen-favicon32.png?v=20261118-brand7" />
+    <link rel="icon" type="image/png" sizes="64x64" href="evergreen-server-icon-64.png?v=20261118-brand7" />
+    <link rel="shortcut icon" href="favicon.ico?v=20261118-brand7" />
+    <link rel="apple-touch-icon" href="evergreen-cozy-brand-square.png?v=20261118-brand7" />
     <link rel="preload" href="evergreen-sprout-pixel.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="styles.css?v=20261017-faces1" />
     <style>
@@ -90,7 +90,7 @@
         background: #fff9ec;
         box-shadow: var(--shadow);
       }
-      .promo-video-player iframe {
+      .promo-video-player :is(iframe, video) {
         position: absolute;
         inset: 0;
         display: block;
@@ -366,13 +366,14 @@
     <script src="presence-config.js?v=20261016-live1" defer></script>
     <script src="presence.js?v=20261017-faces1" defer></script>
     <link rel="stylesheet" href="evergreen-liquid.css?v=20261118-sprout2" />
-    <link rel="stylesheet" href="evergreen-geometry.css?v=20261118-geometry5" />
-    <script src="evergreen-geometry.js?v=20261118-geometry5" defer></script>
-  </head>
+    <link rel="stylesheet" href="evergreen-geometry.css?v=20261118-brand7" />
+    <script src="evergreen-geometry.js?v=20261118-brand7" defer></script>
+    <link rel="stylesheet" href="evergreen-brand.css?v=20261118-brand7">
+</head>
   <body class="evergreen-liquid liquid-home">
     <header class="topbar">
       <a class="brand" href="#top" aria-label="EVERGREEN SMP 홈">
-        <img class="brand-mark" src="evergreen-server-icon-64.png?v=20261031-cozy" width="34" height="34" alt="" aria-hidden="true" decoding="async" />
+        <img class="brand-mark" src="evergreen-server-icon-64.png?v=20261118-brand7" width="34" height="34" alt="" aria-hidden="true" decoding="async" />
         <span>EVERGREEN SMP</span>
       </a>
       <nav class="main-nav" aria-label="주 메뉴">
@@ -437,17 +438,17 @@
             <h2 id="promo-video-title">먼저, 영상으로 만나보세요.</h2>
             <p class="promo-video-description">EVERGREEN SMP의 분위기를 홍보 영상으로 확인해 보세요.</p>
           </div>
-          <a class="promo-video-link" href="https://youtu.be/LLBBFBi3uPo" target="_blank" rel="noopener noreferrer" aria-label="EVERGREEN SMP 새 홍보영상 YouTube에서 크게 보기 (새 창)">
+          <a class="promo-video-link" href="EVERGREEN-Glass-Geometry-1080p60.mp4?v=20261118-brand7" target="_blank" rel="noopener noreferrer" aria-label="EVERGREEN SMP 새 홍보영상 크게 보기 (새 창)">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M5 2.8v10.4L13 8 5 2.8Z" /></svg>
             영상 크게 보기 <span aria-hidden="true">↗</span>
           </a>
         </div>
         <div class="promo-video-player">
-          <iframe width="1920" height="1080"
-            src="https://www.youtube-nocookie.com/embed/LLBBFBi3uPo?rel=0"
-            title="EVERGREEN SMP 새 홍보영상" loading="lazy"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+          <video width="1920" height="1080" controls playsinline preload="metadata"
+            src="EVERGREEN-Glass-Geometry-1080p60.mp4?v=20261118-brand7" poster="evergreen-geometry-video-poster.jpg?v=20261118-brand7"
+            aria-label="EVERGREEN SMP 새 홍보영상">
+            <a href="EVERGREEN-Glass-Geometry-1080p60.mp4?v=20261118-brand7">홍보 영상 재생</a>
+          </video>
         </div>
       </section>
 

@@ -351,14 +351,40 @@
 
   const videoId = /^[a-zA-Z0-9_-]{11}$/.test(cfg.promoVideoId) ? cfg.promoVideoId : "LLBBFBi3uPo";
   const iframe = $("promo-video"), youtubeOrigin = "https://www.youtube.com";
-  $("youtube-link").href = `${youtubeOrigin}/watch?v=${videoId}`;
-  function videoCommand(func, args = []) { if (func === "unMute") func = "mute"; if (state.videoLoaded) iframe.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args, id: "evergreen-promo" }), youtubeOrigin); }
+  const nativeVideo = iframe.tagName === "VIDEO";
+  $("youtube-link").href = nativeVideo ? iframe.src : `${youtubeOrigin}/watch?v=${videoId}`;
+  if (nativeVideo) $("youtube-link").textContent = "영상 크게 보기 ↗";
+  function videoCommand(func, args = []) {
+    if (nativeVideo) {
+      iframe.muted = true; iframe.defaultMuted = true; iframe.volume = 0;
+      if (func === "playVideo") {
+        if (document.hidden || SCENES[state.scene] !== "video" || state.paused || state.stopped) return;
+        iframe.play()?.catch(() => { $("video-state").textContent = "영상 재생 대기 · 화면을 한 번 눌러 주세요"; });
+      } else if (func === "pauseVideo" || func === "stopVideo") {
+        iframe.pause();
+        if (func === "stopVideo") { try { iframe.currentTime = 0; } catch { /* Metadata may still be loading. */ } }
+      } else if (func === "seekTo") { try { iframe.currentTime = Number(args[0]) || 0; } catch { /* Initial playback starts at zero. */ } }
+      return;
+    }
+    if (func === "unMute") func = "mute";
+    if (state.videoLoaded) iframe.contentWindow?.postMessage(JSON.stringify({ event: "command", func, args, id: "evergreen-promo" }), youtubeOrigin);
+  }
   function listenToVideo() {
-    if (!state.videoLoaded) return;
+    if (nativeVideo || !state.videoLoaded) return;
     iframe.contentWindow?.postMessage(JSON.stringify({ event: "listening", id: "evergreen-promo", channel: "evergreen" }), youtubeOrigin);
     videoCommand("addEventListener", ["onStateChange"]); videoCommand("addEventListener", ["onError"]);
   }
   function prepareVideo() {
+    if (nativeVideo) {
+      if (!state.videoLoaded && typeof cfg.promoVideoSrc === "string") {
+        try { const url = new URL(cfg.promoVideoSrc, window.location.href); if (["https:", "http:"].includes(url.protocol)) iframe.src = url.href; } catch { /* Keep the bundled video URL. */ }
+      }
+      state.videoLoaded = true; state.videoReady = iframe.readyState >= 1;
+      iframe.loop = false; iframe.controls = false; iframe.playsInline = true;
+      videoCommand("seekTo", [0]);
+      videoCommand(state.paused ? "pauseVideo" : "playVideo");
+      return;
+    }
     if (!state.videoLoaded) {
       const url = new URL(`${youtubeOrigin}/embed/${videoId}`);
       Object.entries({ autoplay: "1", mute: "1", controls: "0", rel: "0", playsinline: "1", enablejsapi: "1", modestbranding: "1", disablekb: "1" }).forEach(([key, value]) => url.searchParams.set(key, value));
@@ -372,7 +398,7 @@
   }
   iframe.addEventListener("load", () => { listenToVideo(); if (SCENES[state.scene] === "video") { videoCommand(state.videoMuted ? "mute" : "unMute"); videoCommand(state.paused ? "pauseVideo" : "playVideo"); } });
   window.addEventListener("message", (event) => {
-    if (event.origin !== youtubeOrigin || event.source !== iframe.contentWindow) return;
+    if (nativeVideo || event.origin !== youtubeOrigin || event.source !== iframe.contentWindow) return;
     let message; try { message = typeof event.data === "string" ? JSON.parse(event.data) : event.data; } catch { return; }
     if (!message || typeof message !== "object") return;
     if (message.event === "onReady") { state.videoReady = true; listenToVideo(); videoCommand("mute"); if (SCENES[state.scene] === "video") videoCommand(state.paused ? "pauseVideo" : "playVideo"); }
@@ -386,10 +412,25 @@
     if (message.event === "onError") { $("video-play").hidden = false; $("video-state").textContent = "영상 연결 대기 · YouTube에서도 볼 수 있어요"; }
   });
   $("video-play").addEventListener("click", () => { videoCommand("playVideo"); if (state.paused) setPaused(false); $("video-play").hidden = true; });
+  if (nativeVideo) {
+    iframe.addEventListener("loadedmetadata", () => { state.videoReady = true; });
+    iframe.addEventListener("playing", () => {
+      videoCommand("mute"); state.videoPlaying = true; state.videoReady = true;
+      $("video-poster").hidden = true; $("video-play").hidden = true;
+      $("video-state").textContent = "공식 홍보 영상 재생 중 · 무음";
+      if (SCENES[state.scene] !== "video" || state.paused || document.hidden) videoCommand("pauseVideo");
+    });
+    iframe.addEventListener("pause", () => { state.videoPlaying = false; $("video-state").textContent = state.paused ? "방송 일시 정지 중" : "영상 일시 정지"; });
+    iframe.addEventListener("ended", () => { state.videoPlaying = false; if (SCENES[state.scene] === "video" && !state.paused) goScene(state.scene + 1); });
+    iframe.addEventListener("error", () => { state.videoPlaying = false; $("video-poster").hidden = false; $("video-state").textContent = "영상 연결 대기 · 영상 크게 보기로 열 수 있어요"; });
+    iframe.addEventListener("volumechange", () => { if (!iframe.muted || iframe.volume !== 0) videoCommand("mute"); });
+    document.addEventListener("pointerdown", () => { if (SCENES[state.scene] === "video" && !state.paused) videoCommand("playVideo"); }, { passive: true });
+  }
+
 
   function goScene(index, manual = false) {
     const old = SCENES[state.scene]; state.scene = (index + SCENES.length) % SCENES.length; const name = SCENES[state.scene];
-    if (old === "video" && name !== "video") { videoCommand("pauseVideo"); clearInterval(listeningTimer); clearTimeout(videoStartTimer); state.videoPlaying = false; }
+    if (old === "video" && name !== "video") { videoCommand(nativeVideo ? "stopVideo" : "pauseVideo"); clearInterval(listeningTimer); clearTimeout(videoStartTimer); state.videoPlaying = false; }
     state.elapsed = 0; state.focusElapsed = 0;
     document.querySelectorAll(".scene").forEach((scene) => { const active = scene.dataset.scene === name; scene.hidden = !active; scene.classList.toggle("is-active", active); });
     document.querySelectorAll(".scene-tab").forEach((tab) => { const active = tab.dataset.go === name; tab.classList.toggle("is-active", active); if (active) tab.setAttribute("aria-current", "true"); else tab.removeAttribute("aria-current"); });
@@ -441,8 +482,8 @@
     if (document.hidden) { controllers.forEach((controller) => controller.abort()); if (SCENES[state.scene] === "video") videoCommand("pauseVideo"); }
     else { poll("status"); poll("map"); poll("positions"); if (SCENES[state.scene] === "video" && !state.paused) videoCommand("playVideo"); }
   });
-  window.addEventListener("pagehide", () => { state.stopped = true; controllers.forEach((controller) => controller.abort()); clearInterval(listeningTimer); });
-  window.addEventListener("pageshow", () => { state.stopped = false; poll("status"); poll("map"); poll("positions"); });
+  window.addEventListener("pagehide", () => { if (nativeVideo) videoCommand("pauseVideo"); state.stopped = true; controllers.forEach((controller) => controller.abort()); clearInterval(listeningTimer); });
+  window.addEventListener("pageshow", () => { state.stopped = false; if (nativeVideo && SCENES[state.scene] === "video" && !state.paused) videoCommand("playVideo"); poll("status"); poll("map"); poll("positions"); });
   function frame(time) {
     const dt = state.lastFrame ? Math.min(time - state.lastFrame, 1000) : 0; state.lastFrame = time;
     if (!state.stopped && !document.hidden) {
