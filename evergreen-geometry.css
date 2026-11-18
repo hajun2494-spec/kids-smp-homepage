@@ -1,4 +1,4 @@
-/* Image-generated geometry, with real room outside the reading column. */
+/* Four unique image-generated sculptures, alternating at the viewport edges. */
 .evergreen-liquid {
   --geometry-reading-width: 1080px;
   --geometry-gutter: clamp(220px, 18vw, 350px);
@@ -34,8 +34,10 @@ body.evergreen-liquid { background: #f5f6f8; }
   -webkit-user-drag: none;
   z-index: 0;
 }
-.geometry-side-art[data-side="left"] { right: calc(100% + 10px); left: auto; }
-.geometry-side-art[data-side="right"] { left: calc(100% + 10px); right: auto; }
+/* A centered section starts at (viewport - section) / 2.
+   These offsets put exactly one fifth of each image box outside the viewport. */
+.liquid-home .geometry-side-art[data-side="left"] { left: calc(50% - 50vw - var(--geometry-art-size) / 5); right: auto; }
+.liquid-home .geometry-side-art[data-side="right"] { right: calc(50% - 50vw - var(--geometry-art-size) / 5); left: auto; }
 .liquid-home .hero > .geometry-side-art { top: 142px; }
 .liquid-home .promo-video > .geometry-side-art { top: 90px; }
 .liquid-home .section.rules > .geometry-side-art { top: 64px; }
@@ -72,8 +74,9 @@ body.evergreen-liquid { background: #f5f6f8; }
     margin-bottom: 28px;
     width: var(--geometry-art-size);
   }
-  .liquid-home .geometry-side-art[data-side="left"] { margin-left: 0; margin-right: auto; align-self: flex-start; justify-self: start; }
-  .liquid-home .geometry-side-art[data-side="right"] { margin-left: auto; margin-right: 0; align-self: flex-end; justify-self: end; }
+  /* Keep a full image-height row above the heading; only shift it horizontally. */
+  .liquid-home .geometry-section > .geometry-side-art[data-side="left"] { left: calc(50% - 50vw - var(--geometry-art-size) / 5); right: auto; margin-left: 0; margin-right: auto; align-self: flex-start; justify-self: start; }
+  .liquid-home .geometry-section > .geometry-side-art[data-side="right"] { right: calc(50% - 50vw - var(--geometry-art-size) / 5); left: auto; margin-left: auto; margin-right: 0; align-self: flex-end; justify-self: end; }
   .liquid-home .hero { padding-top: 40px; }
   .liquid-home .hero > .geometry-side-art { margin-bottom: 12px; }
   .liquid-home .section.rules { column-gap: 36px; }
@@ -133,4 +136,33 @@ body.evergreen-liquid { background: #f5f6f8; }
   .geometry-map-art,
   .geometry-broadcast-art { display: none !important; }
   .liquid-home main#top > section { width: 100%; }
+}
+
+/* Motion belongs only to the four homepage sculptures. Text is never filtered. */
+.liquid-home .geometry-side-art {
+  transform: translate3d(0, var(--geometry-scroll-y, 0px), 0);
+  will-change: transform;
+}
+.liquid-home .geometry-under-art {
+  position: relative;
+  isolation: isolate;
+}
+.liquid-home .geometry-under-art::before {
+  content: "";
+  display: block;
+  position: absolute;
+  left: var(--geometry-frost-left);
+  top: var(--geometry-frost-top);
+  width: var(--geometry-frost-width);
+  height: var(--geometry-frost-height);
+  z-index: -1;
+  pointer-events: none;
+  border-radius: 14px;
+  clip-path: inset(0 round 14px);
+  background: rgb(255 255 255 / 18%);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .liquid-home .geometry-side-art { transform: none !important; will-change: auto; }
 }
