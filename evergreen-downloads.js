@@ -36,9 +36,9 @@
     link.download = entry.fileName;
     link.textContent = `↓ ${names[loader]} ${entry.minecraft} 모드 다운로드`;
     const stability = entry.loaderStability === 'beta' ? ' (베타)' : '';
-    detail.textContent = `Minecraft ${entry.minecraft} · ${names[loader]} ${entry.loaderVersion}${stability} · Java ${entry.minimumJava || 25} 이상`;
+    detail.textContent = `Minecraft ${entry.minecraft} · ${names[loader]} ${entry.loaderVersion}${stability} · Java ${entry.minimumJava || 25}`;
     instruction.textContent = loader === 'fabric'
-      ? '필요한 Fabric API 모듈은 모드 파일에 포함돼 있어요.'
+      ? 'Fabric API를 따로 설치하지 않아도 돼요.'
       : `${names[loader]} 프로필에 설치해 주세요. Fabric용 파일과 함께 넣지 마세요.`;
   };
   const updateVersions = () => {
