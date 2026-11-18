@@ -1,4 +1,4 @@
-/* Four unique image-generated sculptures, alternating at the viewport edges. */
+/* Ten unique image-generated sculptures, alternating at the viewport edges. */
 .evergreen-liquid {
   --geometry-reading-width: 1080px;
   --geometry-gutter: clamp(220px, 18vw, 350px);
@@ -138,7 +138,7 @@ body.evergreen-liquid { background: #f5f6f8; }
   .liquid-home main#top > section { width: 100%; }
 }
 
-/* Motion belongs only to the four homepage sculptures. Text is never filtered. */
+/* Motion belongs only to the ten homepage sculptures. Text is never filtered. */
 .liquid-home .geometry-side-art {
   transform: translate3d(0, var(--geometry-scroll-y, 0px), 0);
   will-change: transform;
@@ -157,8 +157,12 @@ body.evergreen-liquid { background: #f5f6f8; }
   height: var(--geometry-frost-height);
   z-index: -1;
   pointer-events: none;
-  border-radius: 14px;
-  clip-path: inset(0 round 14px);
+  /* Every mask is a true circle with a transparent, feathered outer rim. */
+  border-radius: 0;
+  -webkit-mask-image: var(--geometry-frost-mask);
+  mask-image: var(--geometry-frost-mask);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
   background: rgb(255 255 255 / 18%);
   -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
