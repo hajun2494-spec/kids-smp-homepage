@@ -131,6 +131,26 @@ body.evergreen-liquid { background: #f5f6f8; }
   .geometry-players-art { width: 68px; }
   .geometry-time-art { width: 32px; flex-basis: 32px; }
 }
+/* Join is a compact closing section, not a full-width colored panel.
+   Its sculpture stays out of normal flow at every width, so 220px of image
+   height plus the mobile bottom margin never becomes empty header space. */
+.liquid-home main#top > #join {
+  background: transparent;
+  padding-top: 70px;
+  padding-bottom: 72px;
+}
+.liquid-home #join.geometry-section > .geometry-side-art {
+  position: absolute;
+  top: 70px;
+  bottom: auto;
+  margin: 0;
+  grid-column: auto;
+  flex: initial;
+}
+.liquid-home #join > .join-heading { margin-top: 0; }
+/* Measure heading text itself, not empty full-width paragraph boxes. */
+.liquid-home #join .join-heading :is(h2, p) { width: fit-content; max-width: 100%; }
+
 @media print {
   .geometry-side-art,
   .geometry-map-art,
