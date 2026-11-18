@@ -1,0 +1,136 @@
+/* Image-generated geometry, with real room outside the reading column. */
+.evergreen-liquid {
+  --geometry-reading-width: 1080px;
+  --geometry-gutter: clamp(220px, 18vw, 350px);
+  --geometry-art-size: clamp(220px, 17.2vw, 330px);
+}
+body.evergreen-liquid { background: #f5f6f8; }
+.liquid-home main#top { overflow: clip; }
+.liquid-home main#top > section {
+  width: min(var(--geometry-reading-width), calc(100% - var(--geometry-gutter) * 2));
+  max-width: var(--geometry-reading-width);
+  margin-inline: auto;
+}
+.liquid-home main#top > section:not(.hours) { padding-inline: 0; }
+.liquid-home .hero { overflow: visible; background: transparent; padding-top: 82px; }
+.liquid-home .hero-copy,
+.liquid-home .hero-art { width: 100%; max-width: 100%; }
+.liquid-home .hero-glow,
+.liquid-home .client-download-grid::before,
+.liquid-broadcast .time-card::after { display: none; }
+
+.liquid-home .geometry-section { position: relative; isolation: isolate; overflow: visible; }
+.geometry-side-art {
+  display: block;
+  position: absolute;
+  top: 82px;
+  width: var(--geometry-art-size);
+  height: auto;
+  max-width: none;
+  opacity: 1;
+  object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+  z-index: 0;
+}
+.geometry-side-art[data-side="left"] { right: calc(100% + 10px); left: auto; }
+.geometry-side-art[data-side="right"] { left: calc(100% + 10px); right: auto; }
+.liquid-home .hero > .geometry-side-art { top: 142px; }
+.liquid-home .promo-video > .geometry-side-art { top: 90px; }
+.liquid-home .section.rules > .geometry-side-art { top: 64px; }
+.liquid-home .join > .geometry-side-art { top: 78px; }
+.liquid-home .geometry-section > :not(.geometry-side-art) { position: relative; z-index: 1; }
+
+/* Side art leaves a usable two-column card layout at medium desktop widths. */
+@media (min-width: 1280px) and (max-width: 1640px) {
+  .liquid-home .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .liquid-home .feature-grid article { min-height: 220px; }
+  .liquid-home .claim-guide .claim-heading,
+  .liquid-home .social-guide .social-heading { grid-template-columns: 1fr; gap: 18px; }
+  .liquid-home :is(.claim-heading, .social-heading) > :is(.section-number, .guide-title-row, p:last-child) { grid-column: 1; grid-row: auto; }
+  .liquid-home .claim-steps,
+  .liquid-home .green-guide .claim-steps { gap: 14px; }
+  .liquid-home .claim-steps article { padding: 24px 20px; }
+  .liquid-home .section.rules { grid-template-columns: .8fr 1.2fr; gap: 34px; }
+  .liquid-home .hours { grid-template-columns: 1fr; gap: 18px; padding: 36px; }
+  .liquid-home .hours-kicker,
+  .liquid-home .hours-time,
+  .liquid-home .hours-copy { grid-column: 1; grid-row: auto; }
+}
+
+/* When outside gutters stop fitting, each sculpture moves above its heading. */
+@media (max-width: 1279px) {
+  .evergreen-liquid { --geometry-art-size: 220px; }
+  .liquid-home main#top > section { width: min(1000px, calc(100% - 72px)); }
+  .liquid-home .geometry-section > .geometry-side-art {
+    position: relative;
+    inset: auto;
+    grid-column: 1 / -1;
+    flex: 0 0 auto;
+    margin-top: 0;
+    margin-bottom: 28px;
+    width: var(--geometry-art-size);
+  }
+  .liquid-home .geometry-side-art[data-side="left"] { margin-left: 0; margin-right: auto; align-self: flex-start; justify-self: start; }
+  .liquid-home .geometry-side-art[data-side="right"] { margin-left: auto; margin-right: 0; align-self: flex-end; justify-self: end; }
+  .liquid-home .hero { padding-top: 40px; }
+  .liquid-home .hero > .geometry-side-art { margin-bottom: 12px; }
+  .liquid-home .section.rules { column-gap: 36px; }
+}
+
+/* The map artwork belongs to the heading, never above map controls or terrain. */
+.liquid-map .geometry-map-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 180px;
+  align-items: center;
+  gap: 24px;
+}
+.liquid-map .geometry-map-heading > div { grid-column: 1; grid-row: 1; }
+.geometry-map-art {
+  display: block;
+  grid-column: 2;
+  grid-row: 1;
+  width: 180px;
+  height: auto;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Small flow-layout accents keep the automatic broadcast interface clear. */
+.geometry-broadcast-art { display: block; height: auto; object-fit: contain; pointer-events: none; user-select: none; opacity: 1; }
+.geometry-players-art { width: 108px; margin: 24px 0 0 auto; }
+.liquid-broadcast .growing-mark { display: inline-flex; align-items: center; gap: 8px; }
+.geometry-time-art { width: 44px; flex: 0 0 44px; }
+.liquid-broadcast .time-card-top { flex-wrap: wrap; }
+
+@media (max-height: 780px) and (min-width: 861px) {
+  .geometry-players-art { width: 72px; margin-top: 14px; }
+  .geometry-time-art { width: 34px; flex-basis: 34px; }
+}
+@media (max-width: 860px) {
+  .evergreen-liquid { --geometry-art-size: 190px; }
+  .liquid-home main#top > section { width: calc(100% - 56px); }
+  .liquid-home .geometry-section > .geometry-side-art { margin-bottom: 22px; }
+  .liquid-map .geometry-map-heading { grid-template-columns: minmax(0, 1fr) 145px; gap: 16px; }
+  .geometry-map-art { width: 145px; }
+  .geometry-players-art { width: 78px; margin-top: 15px; }
+}
+@media (max-width: 620px) {
+  .evergreen-liquid { --geometry-art-size: 145px; }
+  .liquid-home main#top > section { width: calc(100% - 44px); }
+  .liquid-home .geometry-section > .geometry-side-art { margin-bottom: 20px; }
+  .liquid-home .hero { padding-top: 25px; }
+  .liquid-home .hero > .geometry-side-art { margin-bottom: 14px; }
+  .liquid-map .geometry-map-heading { grid-template-columns: 1fr; gap: 16px; }
+  .liquid-map .geometry-map-heading > div { grid-column: 1; grid-row: 2; }
+  .geometry-map-art { grid-column: 1; grid-row: 1; justify-self: end; width: 125px; }
+  .geometry-players-art { width: 68px; }
+  .geometry-time-art { width: 32px; flex-basis: 32px; }
+}
+@media print {
+  .geometry-side-art,
+  .geometry-map-art,
+  .geometry-broadcast-art { display: none !important; }
+  .liquid-home main#top > section { width: 100%; }
+}
