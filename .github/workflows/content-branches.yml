@@ -1,0 +1,123 @@
+name: Create content branches
+on: workflow_dispatch
+
+jobs:
+  create:
+    if: github.repository == 'mcevergreensmp-hub/kids-smp-homepage' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - name: Build and publish six new snapshots together
+        shell: python3 {0}
+        env:
+          PUSH_TOKEN: ${{ github.token }}
+        run: |
+          import os
+          import re
+          import subprocess
+          import tempfile
+          from pathlib import Path
+
+          REPOSITORY = "mcevergreensmp-hub/kids-smp-homepage"
+          SITE = "https://mcevergreensmp-hub.github.io/kids-smp-homepage/"
+          ROLES = {
+              "website": "홈페이지·지도·방송 화면, 가이드 및 다운로드 목록",
+              "mods": "마인크래프트 로더별 에버그린 모드",
+              "launcher": "에버그린 전용 런처 배포 파일",
+              "resource-packs": "서버 리소스팩 배포 파일",
+              "community-art": "한마포 게시물과 서버 목록용 홍보 이미지·배너",
+              "music-video": "에버그린 음악 및 홍보 영상",
+          }
+
+          def classify(path):
+              name = path.lower()
+              if name == "readme.md" or name.startswith((".", "work/", "output/", "node_modules/")):
+                  return None
+              if "/" in path:
+                  raise ValueError(f"Review new directory before publishing: {path}")
+              if name.startswith("evergreen-client-") and name.endswith(".jar"):
+                  match = re.match(r"evergreen-client-(fabric|forge|neoforge)-", name)
+                  folder = match[1] if match else "legacy-unspecified"
+                  return "mods", f"{folder}/{path}"
+              if name.startswith("evergreen-launcher-") and name.endswith((".exe", ".zip")):
+                  return "launcher", path
+              if name.startswith(("evergreen-smp-java", "kids-smp-java")) and name.endswith(".zip"):
+                  return "resource-packs", path
+              if name.endswith((".mp3", ".mp4")):
+                  return "music-video", path
+              if any(mark in name for mark in ("hanmapo", "-listing-", "-cozy-ad-", "-cozy-banner")):
+                  return "community-art", path
+              if name in {"index.html", "map.html", "broadcast.html", "releases.json", "favicon.ico",
+                          "player-avatar-fallback.svg", "kids-smp-logo.png"} or name.endswith((".css", ".js")):
+                  return "website", path
+              if name.startswith("evergreen-") and name.endswith((".png", ".jpg", ".svg", ".woff2")):
+                  return "website", path
+              raise ValueError(f"Review unclassified file: {path}")
+
+          def git(*args, data=None, env=None):
+              return subprocess.run(["git", *args], input=data, stdout=subprocess.PIPE,
+                                    check=True, env=env).stdout
+
+          def create():
+              if os.environ["GITHUB_REPOSITORY"] != REPOSITORY or os.environ["GITHUB_REF"] != "refs/heads/main":
+                  raise RuntimeError("Only this repository's main branch may publish snapshots")
+              root = Path.cwd()
+              git("clone", "--bare", "--depth=1", "--filter=blob:none", "--single-branch", "--branch=main",
+                  "--no-tags", f"https://github.com/{REPOSITORY}.git", str(root / "objects.git"))
+              os.chdir(root / "objects.git")
+              os.environ["GIT_NO_LAZY_FETCH"] = "1"
+              git("config", "user.name", "github-actions[bot]")
+              git("config", "user.email", "41898282+github-actions[bot]@users.noreply.github.com")
+              source = git("rev-parse", "refs/heads/main").decode().strip()
+              refs = {category: f"refs/heads/content/{category}" for category in ROLES}
+              if git("ls-remote", "--heads", "origin", *refs.values()).strip():
+                  raise RuntimeError("A content branch already exists; no branches were changed")
+              groups = {category: {} for category in ROLES}
+              for entry in git("ls-tree", "-rz", source).rstrip(b"\0").split(b"\0"):
+                  header, raw_name = entry.split(b"\t", 1)
+                  name = raw_name.decode()
+                  target = classify(name)
+                  if not target:
+                      continue
+                  mode, kind, oid = header.split()
+                  if kind != b"blob" or mode not in (b"100644", b"100755"):
+                      raise ValueError(f"Unexpected entry type: {name}")
+                  category, destination = target
+                  if destination in groups[category]:
+                      raise ValueError(f"Duplicate destination: {category}/{destination}")
+                  groups[category][destination] = (mode, oid)
+              leases, updates = [], []
+              for category, files in groups.items():
+                  if not files:
+                      raise ValueError(f"Empty category: {category}")
+                  print(f"content/{category}: {len(files)} source files", flush=True)
+                  document = (f"# {ROLES[category]}\n\n"
+                              f"이 브랜치는 [main의 특정 시점](https://github.com/{REPOSITORY}/tree/{source})을 "
+                              "콘텐츠 종류별로 정리한 스냅샷입니다.\n\n"
+                              f"[운영 홈페이지]({SITE})는 [main](https://github.com/{REPOSITORY}/tree/main)에서 "
+                              "배포합니다. 배포에 사용하는 파일과 링크는 main에서 확인하세요.\n")
+                  files["README.md"] = (b"100644", git("hash-object", "-w", "--stdin", data=document.encode()).strip())
+                  env = {**os.environ, "GIT_INDEX_FILE": str(root / f"{category}.index")}
+                  entries = b"".join(mode + b" " + oid + b"\t" + p.encode() + b"\0"
+                                     for p, (mode, oid) in sorted(files.items()))
+                  git("update-index", "--info-only", "-z", "--index-info", data=entries, env=env)
+                  tree = git("write-tree", "--missing-ok", env=env).decode().strip()
+                  commit = git("commit-tree", tree, "-p", source, "-m", f"Group {category} content").decode().strip()
+                  leases.append(f"--force-with-lease={refs[category]}:")
+                  updates.append(f"{commit}:{refs[category]}")
+              askpass = root / "askpass.sh"
+              askpass.write_text('#!/bin/sh\ncase "$1" in *Username*) echo x-access-token ;; '
+                                 '*) printf "%s\\n" "$PUSH_TOKEN" ;; esac\n')
+              askpass.chmod(0o700)
+              env = {**os.environ, "GIT_ASKPASS": str(askpass), "GIT_TERMINAL_PROMPT": "0"}
+              # Every original blob already exists on origin. Avoid probing missing local
+              # blobs as delta bases (notably main's README) or pruning by the old paths.
+              git("-c", "credential.helper=", "-c", "pack.window=0", "-c", "pack.useSparse=false",
+                  "push", "--atomic", *leases, "origin", *updates, env=env)
+
+          if __name__ == "__main__":
+              with tempfile.TemporaryDirectory() as directory:
+                  os.chdir(directory)
+                  create()
